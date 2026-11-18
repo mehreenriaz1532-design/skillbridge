@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkillBridge – Soft Skills Training for Overseas Jobs</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌉%3C/text%3E%3C/svg%3E">
+<style>
+:root{--p:#16264a;--pt:#fff;--a:#f08c00;--bg:#f5f7fa;--t:#17203a;--m:#5b6580;--c:#fff;--b:#dde2ec;--ok:#16794c;--bad:#b42318}
+@media(prefers-color-scheme:dark){:root{--p:#8fa8ff;--pt:#0c1630;--bg:#0c1328;--t:#e8ecf6;--m:#9aa5c3;--c:#141d38;--b:#25305a;--ok:#4ade80;--bad:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,"Segoe UI",Roboto,"Noto Nastaliq Urdu",sans-serif;background:var(--bg);color:var(--t)}
+h1,h2,h3{line-height:1.2;margin:0 0 .5em}h1{font-size:clamp(28px,6vw,46px)}h2{font-size:26px}
+a{color:var(--p)}
+.w{max-width:1050px;margin:auto;padding:28px 18px}.narrow{max-width:480px}
+header{position:sticky;top:0;z-index:5;background:var(--c);border-bottom:1px solid var(--b)}
+header .w{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;gap:10px}
+.logo{font-weight:800;font-size:21px;text-decoration:none;color:var(--p)}
+nav{display:flex;gap:14px;align-items:center}nav a{text-decoration:none;font-weight:600}
+.btn{display:inline-block;padding:10px 18px;border:0;border-radius:8px;background:var(--p);color:var(--pt);font-weight:600;font-size:15px;font-family:inherit;cursor:pointer;text-decoration:none}
+nav a.btn{color:var(--pt)}
+.btn.a{background:var(--a);color:#1b1200}.btn.o{background:none;border:1.5px solid currentColor;color:inherit}
+.btn:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.hero{background:#16264a;color:#fff}.hero .w{padding:56px 18px 40px}.hero p{max-width:60ch;color:#d5dcf0}
+.hero .btn.o{color:#fff}
+.stats{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:34px;padding-top:20px;border-top:1px solid #ffffff33}
+.stats div{font-size:14px;color:#c3cbe4}.stats b{display:block;font-size:30px;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:18px;margin:0 0 14px}
+.grid .card{margin:0}.card h3{margin-bottom:.3em}.ic{font-size:30px}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;counter-reset:s}
+.path div{padding:6px 18px 6px 0;border-top:4px solid var(--a)}.path b{display:block}
+label{display:block;margin:12px 0;font-weight:600;font-size:14px}
+.ur{float:right;font-weight:400;color:var(--m)}
+input,textarea{width:100%;padding:10px 12px;margin-top:4px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
+fieldset{border:1px solid var(--b);border-radius:8px;margin:0 0 14px}legend{font-weight:700;padding:0 6px}
+.op{display:flex;gap:8px;align-items:flex-start;font-weight:400;margin:6px 0}.op input{width:auto;margin-top:6px}
+.bar{height:10px;background:var(--b);border-radius:9px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--ok)}
+.les{display:block;padding:9px 0;border-top:1px solid var(--b);text-decoration:none;color:var(--t)}
+.vid{position:relative;padding-top:56.25%;margin-bottom:14px}.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:10px}
+details.card summary{cursor:pointer;font-weight:600}.ok{color:var(--ok)}.bad{color:var(--bad)}
+footer{text-align:center;color:var(--m);font-size:14px;padding:26px 18px;border-top:1px solid var(--b)}
+#cb{position:fixed;right:14px;bottom:14px;z-index:6;box-shadow:0 4px 14px #0004}
+#chat{display:none;position:fixed;right:14px;bottom:66px;z-index:6;width:min(360px,calc(100vw - 28px));background:var(--c);border:1px solid var(--b);border-radius:12px;padding:10px}
+#chat.open{display:block}#cm{height:260px;overflow:auto;font-size:14px}#cm p{margin:6px 0;padding:8px 10px;border-radius:8px;background:var(--bg)}#cm p.user{background:var(--p);color:var(--pt);margin-left:30px}
+#cf{display:flex;gap:6px;margin-top:8px}#cf input{margin:0}
+.cert{border:6px double var(--p);padding:34px 20px;text-align:center;background:var(--c)}.cert h1{color:var(--p)}
+@media print{header,footer,#cb,#chat,.noprint{display:none!important}body{background:#fff;color:#000}}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<header><div class="w"><a class="logo" href="#/">🌉 SkillBridge</a><nav id="nav"></nav></div></header>
+<main id="app"></main>
+<footer>© 2026 SkillBridge. Developed by Mehreen Riaz – <a href="mailto:mehreenriaz1532@gmail.com">mehreenriaz1532@gmail.com</a></footer>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tok=localStorage.getItem('t'),D=null,hist=[];
+const go=h=>location.hash===h?render():(location.hash=h);
+const err=e=>alert(e.message);
+const fv=f=>Object.fromEntries(new FormData(f));
+const setTok=t=>{tok=t;localStorage.setItem('t',t)};
+function logout(){tok=null;D=null;hist=[];localStorage.removeItem('t');$('#chat')?.remove();$('#cb')?.remove();go('#/')}
+async function api(a,b={}){
+  const r=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json',...(tok?{Authorization:'Bearer '+tok}:{})},body:JSON.stringify({a,...b})});
+  const j=await r.json().catch(()=>({error:'Server error'}));
+  if(!r.ok){if(r.status===401&&tok)logout();throw new Error(j.error||'Error')}
+  return j;
+}
+const fld=(n,l,u,t='text',req=1)=>`<label>${l}<span class="ur">${u}</span><input name="${n}" type="${t}" ${req?'required':''}></label>`;
+const yt=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);return m?`<div class="vid"><iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe></div>`:''};
+
+function nav(){$('#nav').innerHTML=tok?'<a href="#/dash">My course</a><a href="#" onclick="logout();return false">Logout</a>':'<a href="#/login">Login</a><a class="btn" href="#/register">Register</a>'}
+
+async function render(){
+  nav();
+  const [,r,p]=(location.hash.slice(1)||'/').split('/');
+  try{
+    if(['dash','lesson','exam','cert'].includes(r)&&!tok)return go('#/login');
+    window.scrollTo(0,0);
+    await({login:loginV,register:regV,dash,lesson:()=>lesson(p),exam,cert}[r]||home)();
+  }catch(e){app.innerHTML=`<div class="w"><p class="bad">${esc(e.message)}</p></div>`}
+}
+addEventListener('hashchange',render);render();
+
+async function home(){
+  const [c,s]=await Promise.all([api('content'),api('stats')]),S=c.settings,faq=Array.isArray(S.faqs)?S.faqs:[];
+  app.innerHTML=`<section class="hero"><div class="w"><h1>${esc(S.hero_title)}</h1><p>${esc(S.hero_sub)}</p>
+  <p><a class="btn a" href="#/register">Join now</a> <a class="btn o" href="#/login">Login</a></p>
+  <div class="stats">${[['Trainees',s.trainees],['Completion rate',s.rate+'%'],['Certificates issued',s.certificates],['Lessons',s.lessons]].map(x=>`<div><b>${x[1]}</b>${x[0]}</div>`).join('')}</div></div></section>
+  <section class="w"><h2>What you will learn</h2><div class="grid">${c.modules.map(m=>`<div class="card"><div class="ic">${esc(m.icon)}</div><h3>${esc(m.title)}</h3><p>${esc(m.description)}</p><small>${m.lessons[0]?.count||0} lessons</small></div>`).join('')}</div></section>
+  <section class="w"><h2>How it works</h2><div class="path"><div><b>Register</b>Create your account with your CNIC.</div><div><b>Learn</b>Finish every lesson at your own pace.</div><div><b>Get certified</b>Pass the final test and download your certificate.</div></div></section>
+  <section class="w narrow"><h2>Verify a certificate</h2><div class="card"><input id="vc" placeholder="Certificate ID, e.g. SB-1A2B3C4D"><p><button class="btn" onclick="ver()">Verify</button></p><div id="vr"></div></div></section>
+  <section class="w"><h2>Frequently asked questions</h2>${faq.map(f=>`<details class="card"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>`;
+}
+async function ver(){
+  try{const r=await api('verify',{code:$('#vc').value});
+  $('#vr').innerHTML=!r.name?'<p class="bad">Certificate not found.</p>':r.valid?`<p class="ok"><b>Valid certificate</b><br>${esc(r.name)}, CNIC ${esc(r.cnic)}<br>Score ${r.score}%. Issued ${new Date(r.issued_at).toLocaleDateString()}</p>`:'<p class="bad">This certificate has been revoked.</p>'}catch(e){err(e)}
+}
+
+function loginV(){
+  app.innerHTML=`<form class="w narrow card" id="f"><h2>Welcome back</h2>${fld('cnic','CNIC','شناختی کارڈ نمبر')}${fld('password','Password','پاس ورڈ','password')}<button class="btn">Login</button><p><a href="#/register">Create an account</a></p></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('login',fv(e.target))).token);go('#/dash')}catch(x){err(x)}};
+}
+function regV(){
+  app.innerHTML=`<form class="w narrow card" id="f"><h2>Create an account</h2>
+  ${fld('first_name','First name','پہلا نام')}${fld('middle_name','Middle name','درمیانی نام','text',0)}${fld('last_name','Last name','آخری نام')}${fld('dob','Date of birth','تاریخ پیدائش','date')}
+  ${fld('cnic','CNIC (13 digits)','شناختی کارڈ نمبر')}${fld('cnic2','Confirm CNIC','شناختی کارڈ نمبر کی تصدیق')}${fld('email','Email address','ای میل ایڈریس','email')}${fld('phone','Mobile number','موبائل نمبر','tel',0)}${fld('password','Password (6+ characters)','پاس ورڈ','password')}
+  <button class="btn">Create account</button><p><a href="#/login">I already have an account</a></p></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('register',fv(e.target))).token);go('#/dash')}catch(x){err(x)}};
+}
+
+async function dash(){
+  D=await api('me');
+  const L=D.modules.flatMap(m=>m.lessons),dn=new Set(D.done),n=L.filter(l=>dn.has(l.id)).length,pc=L.length?Math.round(n/L.length*100):0;
+  app.innerHTML=`<div class="w"><h2>Hello, ${esc(D.me.first_name)}</h2>
+  <div class="card"><b>${pc}% complete</b> (${n} of ${L.length} lessons)<div class="bar"><i style="width:${pc}%"></i></div></div>
+  ${D.modules.map(m=>`<div class="card"><h3>${esc(m.icon)} ${esc(m.title)}</h3>${m.lessons.map(l=>`<a class="les" href="#/lesson/${l.id}">${dn.has(l.id)?'✅':'⬜'} ${esc(l.title)}</a>`).join('')}</div>`).join('')}
+  <div class="card"><h3>🎓 Final test and certificate</h3>${D.cert?'<a class="btn" href="#/cert">View certificate</a>':pc===100?'<a class="btn a" href="#/exam">Start final test</a>':'<p>Finish all lessons to unlock the final test.</p>'}</div></div>`;
+  chatUI();
+}
+async function lesson(id){
+  if(!D)D=await api('me');
+  const L=D.modules.flatMap(m=>m.lessons),i=L.findIndex(l=>l.id==id),l=await api('lesson',{id}),nx=L[i+1];
+  app.innerHTML=`<div class="w narrow-x" style="max-width:760px"><a href="#/dash">← Back to course</a><h2>${esc(l.title)}</h2>${yt(l.video_url)}<div class="card">${esc(l.content).replace(/\n/g,'<br>')}</div><button class="btn" id="dn">${D.done.includes(l.id)?'Next':'Mark complete and continue'}</button></div>`;
+  $('#dn').onclick=async()=>{try{if(!D.done.includes(l.id)){await api('done',{id:l.id});D.done.push(l.id)}go(nx?'#/lesson/'+nx.id:'#/dash')}catch(e){err(e)}};
+  chatUI();
+}
+async function exam(){
+  const x=await api('exam');
+  app.innerHTML=`<form class="w card" id="f" style="max-width:760px"><h2>Final test</h2><p>Pass mark: ${x.pass}%</p>${x.questions.map((q,i)=>`<fieldset><legend>${i+1}. ${esc(q.question)}</legend>${q.options.map((o,j)=>`<label class="op"><input type="radio" name="${q.id}" value="${j}" required> ${esc(o)}</label>`).join('')}</fieldset>`).join('')}<button class="btn">Submit answers</button></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();const a={};for(const[k,v]of new FormData(e.target))a[k]=+v;
+    try{const r=await api('submit',{answers:a});D=null;app.innerHTML=`<div class="w narrow card"><h2>${r.passed?'You passed':'Not passed yet'}</h2><p>Your score: ${r.score}%</p>${r.passed?'<a class="btn" href="#/cert">Get certificate</a>':'<button class="btn" onclick="render()">Try again</button>'}</div>`}catch(x){err(x)}};
+}
+async function cert(){
+  if(!D)D=await api('me');
+  if(!D.cert)return go('#/dash');
+  const n=[D.me.first_name,D.me.middle_name,D.me.last_name].filter(Boolean).join(' ');
+  app.innerHTML=`<div class="w"><div class="cert"><h3>Certificate of completion</h3><p>This certifies that</p><h1>${esc(n)}</h1><p>completed the SkillBridge soft skills training with a score of ${D.cert.score}%.</p><p><b>${esc(D.cert.id)}</b><br>Issued ${new Date(D.cert.issued_at).toLocaleDateString()}<br><small>Verify at ${esc(location.origin)}</small></p></div><p class="noprint"><button class="btn" onclick="print()">Print or save as PDF</button></p></div>`;
+}
+
+function chatUI(){
+  if($('#chat'))return;
+  document.body.insertAdjacentHTML('beforeend','<button id="cb" class="btn a" onclick="$(\'#chat\').classList.toggle(\'open\')">🤖 AI mentor</button><div id="chat"><div id="cm"><p>Ask me anything about communication, teamwork or working abroad. اردو میں بھی پوچھ سکتے ہیں۔</p></div><form id="cf"><input id="ci" placeholder="Type your question" required><button class="btn">Send</button></form></div>');
+  $('#cf').onsubmit=async e=>{e.preventDefault();const t=$('#ci').value;$('#ci').value='';add('user',t);
+    try{add('assistant',(await api('mentor',{message:t,history:hist.slice(0,-1)})).reply)}catch(x){add('assistant',x.message)}};
+}
+function add(r,t){hist.push({role:r,content:t});$('#cm').insertAdjacentHTML('beforeend',`<p class="${r}">${esc(t)}</p>`);$('#cm').scrollTop=1e9}
+</script>
+</body>
+</html>
