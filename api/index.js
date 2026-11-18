@@ -16,7 +16,7 @@ const COLS = {
   lessons: ['module_id', 'title', 'content', 'video_url', 'position'],
   questions: ['module_id', 'question', 'options', 'answer'],
 };
-const H = { apikey: SK, ...(String(SK).startsWith('eyJ') ? { Authorization: 'Bearer ' + SK } : {}), 'Content-Type': 'application/json' };
+const H = { apikey: SK, Authorization: 'Bearer ' + SK, 'Content-Type': 'application/json' };
 
 async function db(path, method = 'GET', body, prefer = 'return=representation') {
   const r = await fetch(`${SU}/rest/v1/${path}`, { method, headers: { ...H, Prefer: prefer }, body: body ? JSON.stringify(body) : undefined });
