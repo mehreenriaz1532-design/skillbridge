@@ -6,8 +6,8 @@
 <title>SkillBridge – Soft Skills Training for Overseas Jobs</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌉%3C/text%3E%3C/svg%3E">
 <style>
-:root{--p:#16264a;--pt:#fff;--a:#f08c00;--bg:#f5f7fa;--t:#17203a;--m:#5b6580;--c:#fff;--b:#dde2ec;--ok:#16794c;--bad:#b42318}
-@media(prefers-color-scheme:dark){:root{--p:#8fa8ff;--pt:#0c1630;--bg:#0c1328;--t:#e8ecf6;--m:#9aa5c3;--c:#141d38;--b:#25305a;--ok:#4ade80;--bad:#f87171}}
+:root{--p:#0b5d44;--pt:#fff;--a:#f08c00;--bg:#f5f6f3;--t:#1a231f;--m:#5d6a63;--c:#fff;--b:#dfe4de;--ok:#16794c;--bad:#b42318}
+@media(prefers-color-scheme:dark){:root{--p:#5fd0a0;--pt:#06241a;--bg:#0f1512;--t:#e7ede9;--m:#9aaaa1;--c:#171f1b;--b:#26322c;--ok:#4ade80;--bad:#f87171}}
 *{box-sizing:border-box}
 body{margin:0;font:16px/1.6 system-ui,"Segoe UI",Roboto,"Noto Nastaliq Urdu",sans-serif;background:var(--bg);color:var(--t)}
 h1,h2,h3{line-height:1.2;margin:0 0 .5em}h1{font-size:clamp(28px,6vw,46px)}h2{font-size:26px}
@@ -16,37 +16,54 @@ a{color:var(--p)}
 header{position:sticky;top:0;z-index:5;background:var(--c);border-bottom:1px solid var(--b)}
 header .w{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;gap:10px}
 .logo{font-weight:800;font-size:21px;text-decoration:none;color:var(--p)}
-nav{display:flex;gap:14px;align-items:center}nav a{text-decoration:none;font-weight:600}
+nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}nav a{text-decoration:none;font-weight:600}
 .btn{display:inline-block;padding:10px 18px;border:0;border-radius:8px;background:var(--p);color:var(--pt);font-weight:600;font-size:15px;font-family:inherit;cursor:pointer;text-decoration:none}
 nav a.btn{color:var(--pt)}
 .btn.a{background:var(--a);color:#1b1200}.btn.o{background:none;border:1.5px solid currentColor;color:inherit}
-.btn:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--a);outline-offset:2px}
-.hero{background:#16264a;color:#fff}.hero .w{padding:56px 18px 40px}.hero p{max-width:60ch;color:#d5dcf0}
-.hero .btn.o{color:#fff}
-.stats{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:34px;padding-top:20px;border-top:1px solid #ffffff33}
-.stats div{font-size:14px;color:#c3cbe4}.stats b{display:block;font-size:30px;color:#fff}
+.btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.hero{position:relative;overflow:hidden;background:#0b2e24;color:#fff}
+.hb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.6s}.hb.on{opacity:1}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#06201aee,#06201a99)}
+.hi{position:relative;z-index:1;padding:64px 18px 40px}.hero p{max-width:60ch;color:#e0e6f7}.hero .btn.o{color:#fff}
+.stats{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:34px;padding-top:20px;border-top:1px solid #ffffff44}
+.stats div{font-size:14px;color:#d0d8ee}.stats b{display:block;font-size:30px;color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 .card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:18px;margin:0 0 14px}
 .grid .card{margin:0}.card h3{margin-bottom:.3em}.ic{font-size:30px}
-.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;counter-reset:s}
+.cc{display:block;text-decoration:none;color:inherit}.cc:hover{border-color:var(--a)}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--a);color:#1b1200;font-size:12px;font-weight:700}
+.price{font-weight:800;font-size:20px}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .path div{padding:6px 18px 6px 0;border-top:4px solid var(--a)}.path b{display:block}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block}.gal figure{margin:0}.gal figcaption{font-size:13px;color:var(--m)}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
 label{display:block;margin:12px 0;font-weight:600;font-size:14px}
 .ur{float:right;font-weight:400;color:var(--m)}
-input,textarea{width:100%;padding:10px 12px;margin-top:4px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
+input,textarea,select{width:100%;padding:10px 12px;margin-top:4px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
 fieldset{border:1px solid var(--b);border-radius:8px;margin:0 0 14px}legend{font-weight:700;padding:0 6px}
 .op{display:flex;gap:8px;align-items:flex-start;font-weight:400;margin:6px 0}.op input{width:auto;margin-top:6px}
 .bar{height:10px;background:var(--b);border-radius:9px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--ok)}
 .les{display:block;padding:9px 0;border-top:1px solid var(--b);text-decoration:none;color:var(--t)}
 .vid{position:relative;padding-top:56.25%;margin-bottom:14px}.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:10px}
 details.card summary{cursor:pointer;font-weight:600}.ok{color:var(--ok)}.bad{color:var(--bad)}
+ul.tick{padding-left:0;list-style:none}ul.tick li::before{content:"✔ ";color:var(--ok)}
 footer{text-align:center;color:var(--m);font-size:14px;padding:26px 18px;border-top:1px solid var(--b)}
 #cb{position:fixed;right:14px;bottom:14px;z-index:6;box-shadow:0 4px 14px #0004}
 #chat{display:none;position:fixed;right:14px;bottom:66px;z-index:6;width:min(360px,calc(100vw - 28px));background:var(--c);border:1px solid var(--b);border-radius:12px;padding:10px}
 #chat.open{display:block}#cm{height:260px;overflow:auto;font-size:14px}#cm p{margin:6px 0;padding:8px 10px;border-radius:8px;background:var(--bg)}#cm p.user{background:var(--p);color:var(--pt);margin-left:30px}
 #cf{display:flex;gap:6px;margin-top:8px}#cf input{margin:0}
-.cert{border:6px double var(--p);padding:34px 20px;text-align:center;background:var(--c)}.cert h1{color:var(--p)}
-@media print{header,footer,#cb,#chat,.noprint{display:none!important}body{background:#fff;color:#000}}
-@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+/* certificate: always light so it prints well */
+.cert{position:relative;background:#fffdf6;color:#1d2b25;text-align:center;padding:44px 26px 28px;border:3px solid #b8892b;box-shadow:0 0 0 9px #fffdf6,0 0 0 13px #0b4f3a;margin:14px;font-family:Georgia,"Times New Roman",serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.cert::before{content:"";position:absolute;inset:8px;border:1px solid #b8892b;pointer-events:none}
+.cert .band{height:8px;background:linear-gradient(90deg,#0b4f3a,#b8892b,#0b4f3a);margin:-44px -26px 26px}
+.cert h4{letter-spacing:.3em;margin:6px 0;color:#0b4f3a;font-size:15px}.cert h1{font-style:italic;color:#0b4f3a;margin:.2em 0;font-size:clamp(28px,6vw,44px)}.cert h2{color:#b8892b;font-size:24px}
+.seal{width:64px;height:64px;line-height:64px;margin:0 auto 6px;border-radius:50%;background:radial-gradient(#e9c46a,#b8892b);color:#fff;font-size:30px;box-shadow:0 0 0 4px #fffdf6,0 0 0 6px #b8892b}
+.cf{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:26px 0 10px;flex-wrap:wrap}.cf>div{flex:1;min-width:130px}
+.sig{border-top:1px solid #1d2b25;padding-top:4px;font-style:italic;display:inline-block;min-width:130px}
+.qr img{width:96px;height:96px;image-rendering:pixelated;background:#fff;padding:4px;border:1px solid #ccc}
+@media print{header,footer,#cb,#chat,.noprint{display:none!important}body{background:#fff}}
 </style>
 </head>
 <body>
@@ -56,11 +73,16 @@ footer{text-align:center;color:var(--m);font-size:14px;padding:26px 18px;border-
 <script>
 const $=s=>document.querySelector(s),app=$('#app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let tok=localStorage.getItem('t'),D=null,hist=[];
+let tok=localStorage.getItem('t'),D=null,hist=[],hT;
 const go=h=>location.hash===h?render():(location.hash=h);
 const err=e=>alert(e.message);
 const fv=f=>Object.fromEntries(new FormData(f));
 const setTok=t=>{tok=t;localStorage.setItem('t',t)};
+const money=n=>n>0?'Rs. '+Number(n).toLocaleString('en-PK'):'Free';
+const lines=s=>String(s||'').split('\n').map(x=>x.trim()).filter(Boolean);
+const okUrl=u=>/^https?:\/\//i.test(u||'');
+const fld=(n,l,u,t='text',req=1)=>`<label>${l}<span class="ur">${u}</span><input name="${n}" type="${t}" ${req?'required':''}></label>`;
+const yt=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);return m?`<div class="vid"><iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe></div>`:''};
 function logout(){tok=null;D=null;hist=[];localStorage.removeItem('t');$('#chat')?.remove();$('#cb')?.remove();go('#/')}
 async function api(a,b={}){
   const r=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json',...(tok?{Authorization:'Bearer '+tok}:{})},body:JSON.stringify({a,...b})});
@@ -68,39 +90,86 @@ async function api(a,b={}){
   if(!r.ok){if(r.status===401&&tok)logout();throw new Error(j.error||'Error')}
   return j;
 }
-const fld=(n,l,u,t='text',req=1)=>`<label>${l}<span class="ur">${u}</span><input name="${n}" type="${t}" ${req?'required':''}></label>`;
-const yt=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);return m?`<div class="vid"><iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe></div>`:''};
-
-function nav(){$('#nav').innerHTML=tok?'<a href="#/dash">My course</a><a href="#" onclick="logout();return false">Logout</a>':'<a href="#/login">Login</a><a class="btn" href="#/register">Register</a>'}
+function nav(){$('#nav').innerHTML='<a href="#/courses">Courses</a>'+(tok?'<a href="#/dash">My learning</a><a href="#" onclick="logout();return false">Logout</a>':'<a href="#/login">Login</a><a class="btn" href="#/register">Register</a>')}
 
 async function render(){
-  nav();
+  nav();clearInterval(hT);
   const [,r,p]=(location.hash.slice(1)||'/').split('/');
   try{
-    if(['dash','lesson','exam','cert'].includes(r)&&!tok)return go('#/login');
+    if(['dash','learn','lesson','exam','cert','pay'].includes(r)&&!tok)return go('#/login');
     window.scrollTo(0,0);
-    await({login:loginV,register:regV,dash,lesson:()=>lesson(p),exam,cert}[r]||home)();
+    await({login:loginV,register:regV,forgot:forgotV,reset:()=>resetV(p),courses:coursesV,course:()=>courseV(p),pay:()=>payV(p),dash,learn:()=>learn(p),lesson:()=>lesson(p),exam:()=>exam(p),cert:()=>cert(p),verify:()=>verifyV(p)}[r]||home)();
   }catch(e){app.innerHTML=`<div class="w"><p class="bad">${esc(e.message)}</p></div>`}
 }
 addEventListener('hashchange',render);render();
 
+/* ---------- hero background: photos set by admin, else built-in artwork, changing randomly ---------- */
+const SC=[['#0b3d2e','#1f7a5a'],['#262626','#5c4a32'],['#14452f','#7fb069'],['#4a1c1c','#9c4a3a'],['#232826','#4b5a52'],['#3b2f1e','#b08a3e']];
+const scene=(c,i)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c[0]}'/><stop offset='1' stop-color='${c[1]}'/></linearGradient></defs><rect width='1200' height='600' fill='url(#g)'/><circle cx='${200+i*160}' cy='140' r='70' fill='#fff' opacity='.15'/><path d='M0 520 L150 380 L300 500 L470 330 L640 490 L800 360 L1000 500 L1200 400 V600 H0Z' fill='#000' opacity='.28'/></svg>`);
+function slide(urls){
+  const b=[$('#h1'),$('#h2')];let i=-1,k=0;
+  const nx=()=>{let j;do{j=Math.random()*urls.length|0}while(urls.length>1&&j===i);i=j;k^=1;b[k].style.backgroundImage=`url("${urls[j].replace(/"/g,'%22')}")`;b[k].classList.add('on');b[1-k].classList.remove('on')};
+  nx();if(!matchMedia('(prefers-reduced-motion:reduce)').matches)hT=setInterval(nx,6000);
+}
+const cardC=c=>`<a class="card cc" href="#/course/${c.id}"><div class="ic">${esc(c.icon)}</div>${c.is_demo?'<span class="badge">FREE DEMO</span>':''}<h3>${esc(c.title)}</h3><p>${esc(c.summary)}</p><span class="price">${money(c.price)}</span></a>`;
+
 async function home(){
   const [c,s]=await Promise.all([api('content'),api('stats')]),S=c.settings,faq=Array.isArray(S.faqs)?S.faqs:[];
-  app.innerHTML=`<section class="hero"><div class="w"><h1>${esc(S.hero_title)}</h1><p>${esc(S.hero_sub)}</p>
-  <p><a class="btn a" href="#/register">Join now</a> <a class="btn o" href="#/login">Login</a></p>
+  const imgs=(Array.isArray(S.hero_images)?S.hero_images:[]).filter(okUrl);
+  app.innerHTML=`<section class="hero"><div class="hb" id="h1"></div><div class="hb" id="h2"></div><div class="w hi"><h1>${esc(S.hero_title)}</h1><p>${esc(S.hero_sub)}</p>
+  <p><a class="btn a" href="#/courses">Browse courses</a> <a class="btn o" href="#/register">Join free</a></p>
   <div class="stats">${[['Trainees',s.trainees],['Completion rate',s.rate+'%'],['Certificates issued',s.certificates],['Lessons',s.lessons]].map(x=>`<div><b>${x[1]}</b>${x[0]}</div>`).join('')}</div></div></section>
-  <section class="w"><h2>What you will learn</h2><div class="grid">${c.modules.map(m=>`<div class="card"><div class="ic">${esc(m.icon)}</div><h3>${esc(m.title)}</h3><p>${esc(m.description)}</p><small>${m.lessons[0]?.count||0} lessons</small></div>`).join('')}</div></section>
-  <section class="w"><h2>How it works</h2><div class="path"><div><b>Register</b>Create your account with your CNIC.</div><div><b>Learn</b>Finish every lesson at your own pace.</div><div><b>Get certified</b>Pass the final test and download your certificate.</div></div></section>
-  <section class="w narrow"><h2>Verify a certificate</h2><div class="card"><input id="vc" placeholder="Certificate ID, e.g. SB-1A2B3C4D"><p><button class="btn" onclick="ver()">Verify</button></p><div id="vr"></div></div></section>
+  ${c.announcements.length?`<section class="w"><h2>📢 Announcements</h2>${c.announcements.map(a=>`<div class="card">${a.pinned?'📌 ':''}<b>${esc(a.title)}</b> <small>${new Date(a.created_at).toLocaleDateString()}</small><p>${esc(a.body)}</p></div>`).join('')}</section>`:''}
+  <section class="w"><h2>About SkillBridge</h2><p>${esc(S.about)}</p><div class="grid">${[['🎓','Structured courses','Short lessons, a quiz and a final test in every course.'],['📅','Live classes','Join live sessions with your instructor on Zoom.'],['✅','Verified certificates','Every certificate carries a QR code anyone can scan.'],['🗣️','Urdu and English','Clear, simple language made for workers heading abroad.']].map(x=>`<div class="card"><div class="ic">${x[0]}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join('')}</div></section>
+  <section class="w"><h2>Courses</h2><div class="grid">${c.courses.map(cardC).join('')}</div></section>
+  ${c.gallery.length?`<section class="w"><h2>Gallery</h2><div class="gal">${c.gallery.filter(g=>okUrl(g.image_url)).map(g=>{const f=`<figure><img loading="lazy" src="${esc(g.image_url)}" alt="${esc(g.caption)}"><figcaption>${esc(g.caption)}</figcaption></figure>`;return okUrl(g.link)?`<a href="${esc(g.link)}" target="_blank" rel="noopener">${f}</a>`:f}).join('')}</div></section>`:''}
+  <section class="w"><h2>How it works</h2><div class="path"><div><b>1. Register</b>Create your account with your CNIC.</div><div><b>2. Learn</b>Finish lessons at your own pace and join live classes.</div><div><b>3. Get certified</b>Pass the final test and download your certificate.</div></div></section>
+  <section class="w narrow"><h2>Verify a certificate</h2><div class="card"><input id="vc" placeholder="Certificate ID, e.g. SB-1A2B3C4D"><p><button class="btn" onclick="go('#/verify/'+encodeURIComponent($('#vc').value.trim()))">Verify</button></p></div></section>
   <section class="w"><h2>Frequently asked questions</h2>${faq.map(f=>`<details class="card"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>`;
+  slide(imgs.length?imgs:SC.map(scene));
 }
-async function ver(){
-  try{const r=await api('verify',{code:$('#vc').value});
-  $('#vr').innerHTML=!r.name?'<p class="bad">Certificate not found.</p>':r.valid?`<p class="ok"><b>Valid certificate</b><br>${esc(r.name)}, CNIC ${esc(r.cnic)}<br>Score ${r.score}%. Issued ${new Date(r.issued_at).toLocaleDateString()}</p>`:'<p class="bad">This certificate has been revoked.</p>'}catch(e){err(e)}
+async function verifyV(code){
+  const r=await api('verify',{code});
+  app.innerHTML=`<div class="w narrow card"><h2>Certificate check</h2>${!r.name?'<p class="bad">Certificate not found. Check the ID and try again.</p>':r.valid?`<p class="ok"><b>✔ Valid certificate</b></p><p><b>${esc(r.name)}</b><br>CNIC ${esc(r.cnic)}<br>Course: ${esc(r.course||'')}<br>Score ${r.score}%<br>Issued ${new Date(r.issued_at).toLocaleDateString()}<br>ID ${esc(r.code)}</p>`:'<p class="bad">This certificate has been revoked.</p>'}</div>`;
 }
 
+/* ---------- courses (Coursera style: list, then a detail page) ---------- */
+async function coursesV(){
+  const c=await api('content');
+  app.innerHTML=`<div class="w"><h2>All courses</h2><div class="grid">${c.courses.map(cardC).join('')||'<p>No courses yet.</p>'}</div></div>`;
+}
+async function courseV(id){
+  const c=await api('course',{id});
+  if(tok&&!D)try{D=await api('me')}catch{}
+  const en=D?.courses?.some(x=>x.id==c.id),pend=D?.pays?.some(p=>p.course_id==c.id&&p.status==='pending');
+  const n=c.modules.reduce((s,m)=>s+m.lessons.length,0);
+  const cta=en?`<a class="btn a" href="#/learn/${c.id}">Go to course</a>`:!tok?'<a class="btn a" href="#/register">Register to start</a> <a class="btn o" href="#/login">Login</a>':c.price>0?(pend?'<p class="ok">Payment received. You get access as soon as it is approved.</p>':`<a class="btn a" href="#/pay/${c.id}">Buy now</a>`):`<button class="btn a" onclick="enroll(${c.id})">Start free</button>`;
+  app.innerHTML=`<div class="w"><div class="two"><div><div class="ic">${esc(c.icon)}</div>${c.is_demo?'<span class="badge">FREE DEMO</span>':''}<h1>${esc(c.title)}</h1><p>${esc(c.summary)}</p>
+  <h2>About this course</h2><p>${esc(c.description)}</p>
+  ${lines(c.benefits).length?`<h2>Why it matters</h2><ul class="tick">${lines(c.benefits).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+  ${lines(c.outcomes).length?`<h2>What you will learn</h2><ul class="tick">${lines(c.outcomes).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+  <h2>Syllabus</h2>${c.modules.map(m=>`<details class="card"><summary>${esc(m.title)} (${m.lessons.length} lessons)</summary>${m.lessons.map(l=>`<div class="les">• ${esc(l.title)}</div>`).join('')}</details>`).join('')}</div>
+  <div class="card"><div class="price">${money(c.price)}</div><p>${n} lessons<br>Instructor: ${esc(c.instructor||'SkillBridge Team')}<br>Quiz, live classes and certificate with QR code</p>${cta}</div></div></div>`;
+}
+async function enroll(id){try{await api('enroll',{course_id:id});D=null;go('#/learn/'+id)}catch(e){err(e)}}
+
+/* ---------- payment (manual: bank / JazzCash / EasyPaisa) ---------- */
+async function payV(id){
+  const [c,ct]=await Promise.all([api('course',{id}),api('content')]);
+  app.innerHTML=`<form class="w narrow card" id="f"><h2>Buy: ${esc(c.title)}</h2><p class="price">${money(c.price)}</p>
+  <div class="card" style="white-space:pre-wrap">${esc(ct.settings.pay_info)}</div>
+  <label>Payment method<select name="method"><option value="jazzcash">JazzCash</option><option value="easypaisa">EasyPaisa</option><option value="bank">Bank transfer</option></select></label>
+  <label>Amount paid (Rs.)<input name="amount" type="number" value="${c.price}" required></label>
+  <label>Your name / account number<input name="sender" required></label>
+  <label>Transaction ID<input name="trx_id" required minlength="6"></label>
+  <label>Screenshot link (optional)<input name="proof_url" type="url" placeholder="https://..."></label>
+  <button class="btn">Submit payment</button><p><small>Your course opens after the admin checks and approves your payment. Wrong or reused transaction IDs are rejected.</small></p></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();try{await api('pay',{...fv(e.target),course_id:+id});D=null;alert('Payment submitted. You will get access after approval.');go('#/dash')}catch(x){err(x)}};
+}
+
+/* ---------- accounts ---------- */
 function loginV(){
-  app.innerHTML=`<form class="w narrow card" id="f"><h2>Welcome back</h2>${fld('cnic','CNIC','شناختی کارڈ نمبر')}${fld('password','Password','پاس ورڈ','password')}<button class="btn">Login</button><p><a href="#/register">Create an account</a></p></form>`;
+  app.innerHTML=`<form class="w narrow card" id="f"><h2>Welcome back</h2>${fld('cnic','CNIC','شناختی کارڈ نمبر')}${fld('password','Password','پاس ورڈ','password')}<button class="btn">Login</button><p><a href="#/forgot">Forgot password?</a> · <a href="#/register">Create an account</a></p></form>`;
   $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('login',fv(e.target))).token);go('#/dash')}catch(x){err(x)}};
 }
 function regV(){
@@ -110,36 +179,64 @@ function regV(){
   <button class="btn">Create account</button><p><a href="#/login">I already have an account</a></p></form>`;
   $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('register',fv(e.target))).token);go('#/dash')}catch(x){err(x)}};
 }
+function forgotV(){
+  app.innerHTML=`<form class="w narrow card" id="f"><h2>Forgot password</h2><p>Enter your CNIC or the email you registered with. We will email you a reset link.</p>${fld('who','CNIC or email','')}<button class="btn">Send reset link</button><p><a href="#/login">Back to login</a></p></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();try{await api('forgot',fv(e.target));app.innerHTML='<div class="w narrow card"><h2>Check your email</h2><p>If an account exists, a reset link has been sent. It works for 1 hour. Check the spam folder too.</p></div>'}catch(x){err(x)}};
+}
+function resetV(token){
+  app.innerHTML=`<form class="w narrow card" id="f"><h2>Choose a new password</h2>${fld('password','New password (6+ characters)','','password')}${fld('p2','Repeat password','','password')}<button class="btn">Change password</button></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();const v=fv(e.target);if(v.password!==v.p2)return alert('Passwords do not match');try{await api('reset',{token,password:v.password});alert('Password changed. Please login.');go('#/login')}catch(x){err(x)}};
+}
 
+/* ---------- learning area ---------- */
+const pct=(c,dn)=>{const L=c.modules.flatMap(m=>m.lessons);return{n:L.filter(l=>dn.has(l.id)).length,t:L.length}};
 async function dash(){
-  D=await api('me');
-  const L=D.modules.flatMap(m=>m.lessons),dn=new Set(D.done),n=L.filter(l=>dn.has(l.id)).length,pc=L.length?Math.round(n/L.length*100):0;
+  D=await api('me');const dn=new Set(D.done);
+  const pend=D.pays.filter(p=>p.status==='pending'),rej=D.pays.filter(p=>p.status==='rejected');
   app.innerHTML=`<div class="w"><h2>Hello, ${esc(D.me.first_name)}</h2>
-  <div class="card"><b>${pc}% complete</b> (${n} of ${L.length} lessons)<div class="bar"><i style="width:${pc}%"></i></div></div>
-  ${D.modules.map(m=>`<div class="card"><h3>${esc(m.icon)} ${esc(m.title)}</h3>${m.lessons.map(l=>`<a class="les" href="#/lesson/${l.id}">${dn.has(l.id)?'✅':'⬜'} ${esc(l.title)}</a>`).join('')}</div>`).join('')}
-  <div class="card"><h3>🎓 Final test and certificate</h3>${D.cert?'<a class="btn" href="#/cert">View certificate</a>':pc===100?'<a class="btn a" href="#/exam">Start final test</a>':'<p>Finish all lessons to unlock the final test.</p>'}</div></div>`;
+  ${pend.length?`<div class="card">⏳ ${pend.length} payment(s) waiting for admin approval.</div>`:''}${rej.length?`<div class="card bad">A payment was rejected. Check the transaction ID or contact support, then submit again.</div>`:''}
+  <h3>My courses</h3>${D.courses.map(c=>{const p=pct(c,dn),q=p.t?Math.round(p.n/p.t*100):0;return`<a class="card cc" href="#/learn/${c.id}"><h3>${esc(c.icon)} ${esc(c.title)}</h3><b>${q}% complete</b> (${p.n} of ${p.t} lessons)<div class="bar"><i style="width:${q}%"></i></div></a>`}).join('')||'<div class="card"><p>You are not enrolled in any course yet.</p></div>'}
+  <p><a class="btn a" href="#/courses">Browse courses</a></p>
+  ${D.live.length?`<h3>📅 Live classes</h3>${D.live.map(l=>`<div class="card"><b>${esc(l.title)}</b><br>${new Date(l.starts_at).toLocaleString()}${l.notes?`<br><small>${esc(l.notes)}</small>`:''}${okUrl(l.link)?`<p><a class="btn" href="${esc(l.link)}" target="_blank" rel="noopener">Join class</a></p>`:''}</div>`).join('')}`:''}</div>`;
+  chatUI();
+}
+async function learn(id){
+  if(!D)D=await api('me');
+  const c=D.courses.find(x=>x.id==id);if(!c)return go('#/course/'+id);
+  const dn=new Set(D.done),p=pct(c,dn),q=p.t?Math.round(p.n/p.t*100):0,ct=D.certs.find(x=>x.course_id==id);
+  app.innerHTML=`<div class="w"><a href="#/dash">← My learning</a><h2>${esc(c.icon)} ${esc(c.title)}</h2><div class="card"><b>${q}% complete</b> (${p.n} of ${p.t} lessons)<div class="bar"><i style="width:${q}%"></i></div></div>
+  ${c.modules.map(m=>`<div class="card"><h3>${esc(m.icon)} ${esc(m.title)}</h3>${m.lessons.map(l=>`<a class="les" href="#/lesson/${l.id}">${dn.has(l.id)?'✅':'⬜'} ${esc(l.title)}</a>`).join('')}</div>`).join('')}
+  <div class="card"><h3>🎓 Final test and certificate</h3>${ct?`<a class="btn" href="#/cert/${id}">View certificate</a>`:q===100?`<a class="btn a" href="#/exam/${id}">Start final test</a>`:'<p>Finish all lessons to unlock the final test.</p>'}</div></div>`;
   chatUI();
 }
 async function lesson(id){
   if(!D)D=await api('me');
-  const L=D.modules.flatMap(m=>m.lessons),i=L.findIndex(l=>l.id==id),l=await api('lesson',{id}),nx=L[i+1];
-  app.innerHTML=`<div class="w narrow-x" style="max-width:760px"><a href="#/dash">← Back to course</a><h2>${esc(l.title)}</h2>${yt(l.video_url)}<div class="card">${esc(l.content).replace(/\n/g,'<br>')}</div><button class="btn" id="dn">${D.done.includes(l.id)?'Next':'Mark complete and continue'}</button></div>`;
-  $('#dn').onclick=async()=>{try{if(!D.done.includes(l.id)){await api('done',{id:l.id});D.done.push(l.id)}go(nx?'#/lesson/'+nx.id:'#/dash')}catch(e){err(e)}};
+  const c=D.courses.find(c=>c.modules.some(m=>m.lessons.some(l=>l.id==id)));
+  const l=await api('lesson',{id}),L=c?c.modules.flatMap(m=>m.lessons):[],nx=L[L.findIndex(x=>x.id==id)+1];
+  app.innerHTML=`<div class="w" style="max-width:760px"><a href="#/learn/${c?c.id:''}">← Back to course</a><h2>${esc(l.title)}</h2>${yt(l.video_url)}<div class="card">${esc(l.content).replace(/\n/g,'<br>')}</div><button class="btn" id="dn">${D.done.includes(l.id)?'Next':'Mark complete and continue'}</button></div>`;
+  $('#dn').onclick=async()=>{try{if(!D.done.includes(l.id)){await api('done',{id:l.id});D.done.push(l.id)}go(nx?'#/lesson/'+nx.id:'#/learn/'+(c?c.id:''))}catch(e){err(e)}};
   chatUI();
 }
-async function exam(){
-  const x=await api('exam');
+async function exam(cid){
+  const x=await api('exam',{course_id:+cid});
   app.innerHTML=`<form class="w card" id="f" style="max-width:760px"><h2>Final test</h2><p>Pass mark: ${x.pass}%</p>${x.questions.map((q,i)=>`<fieldset><legend>${i+1}. ${esc(q.question)}</legend>${q.options.map((o,j)=>`<label class="op"><input type="radio" name="${q.id}" value="${j}" required> ${esc(o)}</label>`).join('')}</fieldset>`).join('')}<button class="btn">Submit answers</button></form>`;
   $('#f').onsubmit=async e=>{e.preventDefault();const a={};for(const[k,v]of new FormData(e.target))a[k]=+v;
-    try{const r=await api('submit',{answers:a});D=null;app.innerHTML=`<div class="w narrow card"><h2>${r.passed?'You passed':'Not passed yet'}</h2><p>Your score: ${r.score}%</p>${r.passed?'<a class="btn" href="#/cert">Get certificate</a>':'<button class="btn" onclick="render()">Try again</button>'}</div>`}catch(x){err(x)}};
-}
-async function cert(){
-  if(!D)D=await api('me');
-  if(!D.cert)return go('#/dash');
-  const n=[D.me.first_name,D.me.middle_name,D.me.last_name].filter(Boolean).join(' ');
-  app.innerHTML=`<div class="w"><div class="cert"><h3>Certificate of completion</h3><p>This certifies that</p><h1>${esc(n)}</h1><p>completed the SkillBridge soft skills training with a score of ${D.cert.score}%.</p><p><b>${esc(D.cert.id)}</b><br>Issued ${new Date(D.cert.issued_at).toLocaleDateString()}<br><small>Verify at ${esc(location.origin)}</small></p></div><p class="noprint"><button class="btn" onclick="print()">Print or save as PDF</button></p></div>`;
+    try{const r=await api('submit',{course_id:+cid,answers:a});D=null;app.innerHTML=`<div class="w narrow card"><h2>${r.passed?'You passed':'Not passed yet'}</h2><p>Your score: ${r.score}%</p>${r.passed?`<a class="btn" href="#/cert/${cid}">Get certificate</a>`:'<button class="btn" onclick="render()">Try again</button>'}</div>`}catch(x){err(x)}};
 }
 
+/* ---------- certificate with QR code ---------- */
+const qrLib=()=>window.qrcode?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+async function cert(cid){
+  if(!D)D=await api('me');
+  const ct=D.certs.find(x=>x.course_id==cid),co=D.courses.find(x=>x.id==cid);if(!ct||!co)return go('#/dash');
+  const n=[D.me.first_name,D.me.middle_name,D.me.last_name].filter(Boolean).join(' '),url=location.origin+'/#/verify/'+ct.id;
+  app.innerHTML=`<div class="w"><div class="cert"><div class="band"></div><div class="seal">★</div><h4>CERTIFICATE OF COMPLETION</h4><p>This is to certify that</p><h1>${esc(n)}</h1><p>has successfully completed the course</p><h2>${esc(co.title)}</h2><p>with a score of ${ct.score}%</p>
+  <div class="cf"><div><span class="sig">SkillBridge</span><br><small>Authorised by SkillBridge</small></div><div><b>${esc(ct.id)}</b><br><small>Issued ${new Date(ct.issued_at).toLocaleDateString()}</small></div><div class="qr" id="qr"></div></div>
+  <small>Scan the QR code to verify this certificate online.</small></div><p class="noprint"><button class="btn" onclick="print()">Print or save as PDF</button></p></div>`;
+  try{await qrLib();const q=qrcode(0,'M');q.addData(url);q.make();$('#qr').innerHTML=q.createImgTag(4,2)}catch{$('#qr').textContent=ct.id}
+}
+
+/* ---------- AI mentor ---------- */
 function chatUI(){
   if($('#chat'))return;
   document.body.insertAdjacentHTML('beforeend','<button id="cb" class="btn a" onclick="$(\'#chat\').classList.toggle(\'open\')">🤖 AI mentor</button><div id="chat"><div id="cm"><p>Ask me anything about communication, teamwork or working abroad. اردو میں بھی پوچھ سکتے ہیں۔</p></div><form id="cf"><input id="ci" placeholder="Type your question" required><button class="btn">Send</button></form></div>');
