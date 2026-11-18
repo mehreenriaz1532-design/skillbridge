@@ -6,19 +6,19 @@
 <meta name="robots" content="noindex">
 <title>SkillBridge Admin</title>
 <style>
-:root{--p:#16264a;--pt:#fff;--a:#f08c00;--bg:#f5f7fa;--t:#17203a;--m:#5b6580;--c:#fff;--b:#dde2ec}
-@media(prefers-color-scheme:dark){:root{--p:#8fa8ff;--pt:#0c1630;--bg:#0c1328;--t:#e8ecf6;--m:#9aa5c3;--c:#141d38;--b:#25305a}}
+:root{--p:#0b5d44;--pt:#fff;--a:#f08c00;--bg:#f5f6f3;--t:#1a231f;--m:#5d6a63;--c:#fff;--b:#dfe4de}
+@media(prefers-color-scheme:dark){:root{--p:#5fd0a0;--pt:#06241a;--bg:#0f1512;--t:#e7ede9;--m:#9aaaa1;--c:#171f1b;--b:#26322c}}
 *{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--t)}
-.w{max-width:1100px;margin:auto;padding:18px}.narrow{max-width:400px;margin-top:60px}
+.w{max-width:1150px;margin:auto;padding:18px}.narrow{max-width:400px;margin-top:60px}
 .card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:16px;margin:0 0 12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.grid .card{margin:0}.grid b{font-size:28px}
 button,.btn{padding:8px 14px;border:1px solid var(--b);border-radius:8px;background:var(--c);color:var(--t);font:inherit;cursor:pointer}
 .btn{background:var(--p);color:var(--pt);border:0;font-weight:600}.btn.a{background:var(--a);color:#1b1200}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}.tabs button.on{background:var(--p);color:var(--pt)}
 input,textarea{width:100%;padding:9px 11px;margin:4px 0 10px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
-input[type=checkbox]{width:auto}label{font-weight:600;font-size:14px;display:block}
+input[type=checkbox]{width:auto}label{font-weight:600;font-size:14px;display:block}small{color:var(--m);font-weight:400}
 .sc{overflow-x:auto}table{border-collapse:collapse;width:100%;background:var(--c)}th,td{padding:8px 10px;border-bottom:1px solid var(--b);text-align:left;vertical-align:top;font-size:14px}td button{margin:0 4px 4px 0;padding:4px 10px}
-dialog{width:min(560px,94vw);border:1px solid var(--b);border-radius:12px;background:var(--c);color:var(--t)}
+dialog{width:min(580px,94vw);max-height:90vh;overflow:auto;border:1px solid var(--b);border-radius:12px;background:var(--c);color:var(--t)}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--a);outline-offset:2px}
 </style>
 </head>
@@ -37,21 +37,27 @@ async function api(a,b={}){
   return j;
 }
 function out(){tok=null;localStorage.removeItem('at');show()}
+// f = form fields [key,label,type]  type: ta=textarea, n=number, b=checkbox, dt=date+time
 const T={
-  modules:{c:['id','icon','title','position','published'],f:[['title','Title'],['description','Description','ta'],['icon','Icon (one emoji)'],['position','Order','n'],['published','Published','b']]},
+  courses:{c:['id','icon','title','price','is_demo','published'],f:[['title','Title'],['summary','Short summary','ta'],['description','About this course','ta'],['benefits','Why it matters (one point per line)','ta'],['outcomes','What students will learn (one per line)','ta'],['instructor','Instructor name'],['icon','Icon (one emoji)'],['price','Price in Rs. (0 = free)','n'],['is_demo','Free demo course','b'],['published','Published','b'],['position','Order','n']]},
+  modules:{c:['id','course_id','icon','title','position','published'],f:[['course_id','Course ID (see Courses tab)','n'],['title','Title'],['description','Description','ta'],['icon','Icon (one emoji)'],['position','Order','n'],['published','Published','b']]},
   lessons:{c:['id','module_id','title','position'],f:[['module_id','Module ID (see Modules tab)','n'],['title','Title'],['content','Lesson text','ta'],['video_url','YouTube link (optional)'],['position','Order','n']]},
   questions:{c:['id','module_id','question','answer'],f:[['module_id','Module ID','n'],['question','Question','ta'],['options','Options (one per line)','ta'],['answer','Correct option number (1, 2, 3...)','n']]},
+  live_classes:{c:['id','course_id','title','starts_at','link'],f:[['course_id','Course ID (empty = all enrolled students)','n'],['title','Class title'],['starts_at','Date and time','dt'],['link','Zoom / Meet / YouTube Live link'],['notes','Notes for students','ta']]},
+  announcements:{c:['id','title','pinned','created_at'],f:[['title','Title'],['body','Message','ta'],['pinned','Pin to top','b']]},
+  gallery:{c:['id','caption','image_url','position'],f:[['image_url','Image link (https://...)'],['caption','Caption'],['link','Click-through link (optional)'],['position','Order','n']]},
+  payments:{c:['id','trainees','courses','method','amount','trx_id','sender','proof_url','status','flags','created_at']},
   trainees:{c:['cnic','first_name','last_name','email','phone','created_at']},
-  certificates:{c:['id','trainees','score','issued_at','revoked']}
+  certificates:{c:['id','trainees','courses','score','issued_at','revoked']}
 };
-const TABS=['dash','modules','lessons','questions','trainees','certificates','settings'];
+const TABS=['dash',...Object.keys(T),'settings'];
 function show(){
   if(!tok){
     app.innerHTML='<form class="card narrow" id="f"><h3>Admin login</h3><input name="user" placeholder="Username" required><input name="pass" type="password" placeholder="Password" required><button class="btn">Login</button></form>';
     $('#f').onsubmit=async e=>{e.preventDefault();try{tok=(await api('admin_login',fv(e.target))).token;localStorage.setItem('at',tok);show()}catch(x){alert(x.message)}};
     return;
   }
-  app.innerHTML=`<div class="tabs">${TABS.map(t=>`<button data-t="${t}">${t}</button>`).join('')}<button onclick="out()">Logout</button></div><div id="pane"></div>`;
+  app.innerHTML=`<div class="tabs">${TABS.map(t=>`<button data-t="${t}">${t.replace('_',' ')}</button>`).join('')}<button onclick="out()">Logout</button></div><div id="pane"></div>`;
   document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>tab(b.dataset.t));
   tab(cur);
 }
@@ -59,44 +65,53 @@ async function tab(t){
   cur=t;document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   const p=$('#pane');
   try{
-    if(t==='dash'){const s=await api('a_stats');p.innerHTML='<div class="grid">'+Object.entries(s).map(([k,v])=>`<div class="card"><b>${v}</b><br>${k}</div>`).join('')+'</div>'}
+    if(t==='dash'){const s=await api('a_stats');p.innerHTML='<div class="grid">'+Object.entries(s).map(([k,v])=>`<div class="card"><b>${v}</b><br>${k.replace('_',' ')}</div>`).join('')+'</div>'}
     else if(t==='settings')await settings(p);
     else await list(t,p);
   }catch(e){alert(e.message)}
 }
-const fmt=v=>v&&typeof v==='object'?(v.first_name?v.first_name+' '+v.last_name:JSON.stringify(v)):typeof v==='string'&&v.length>70?v.slice(0,70)+'…':v;
+const fmt=v=>v&&typeof v==='object'?(v.first_name?v.first_name+' '+v.last_name:v.title||JSON.stringify(v)):typeof v==='string'&&v.length>60?v.slice(0,60)+'…':v;
+const cell=(k,v)=>k==='proof_url'&&/^https?:\/\//i.test(v||'')?`<a href="${esc(v)}" target="_blank" rel="noopener">view</a>`:k==='flags'&&v?`<b style="color:#c0392b">${esc(v)}</b>`:esc(fmt(v));
 async function list(t,p){
   const rows=await api('a_list',{t}),c=T[t];cache[t]=rows;
-  p.innerHTML=`<p>${c.f?`<button class="btn" onclick="edit('${t}')">+ Add</button> `:''}${t==='questions'?'<button class="btn a" onclick="aiq()">✨ Generate with AI</button>':''}</p>
-  <div class="sc"><table><tr>${c.c.map(k=>`<th>${k}</th>`).join('')}<th></th></tr>${rows.map(r=>`<tr>${c.c.map(k=>`<td>${esc(fmt(r[k]))}</td>`).join('')}<td>${c.f?`<button onclick="edit('${t}',${r.id})">Edit</button>`:''}${t==='certificates'?`<button onclick="rv('${r.id}',${!r.revoked})">${r.revoked?'Restore':'Revoke'}</button>`:''}<button onclick="del('${t}','${r.id}')">Delete</button></td></tr>`).join('')}</table></div>`;
+  p.innerHTML=`<p>${c.f?`<button class="btn" onclick="edit('${t}')">+ Add</button> `:''}${t==='questions'?'<button class="btn a" onclick="aiq()">✨ Generate with AI</button>':''}${t==='payments'?'<small>Red flags = suspicious. Check them before you approve.</small>':''}</p>
+  <div class="sc"><table><tr>${c.c.map(k=>`<th>${k}</th>`).join('')}<th></th></tr>${rows.map(r=>`<tr>${c.c.map(k=>`<td>${cell(k,r[k])}</td>`).join('')}<td>${c.f?`<button onclick="edit('${t}',${r.id})">Edit</button>`:''}${t==='certificates'?`<button onclick="rv('${r.id}',${!r.revoked})">${r.revoked?'Restore':'Revoke'}</button>`:''}${t==='payments'&&r.status==='pending'?`<button onclick="pay(${r.id},'approved')">Approve</button><button onclick="pay(${r.id},'rejected')">Reject</button>`:''}<button onclick="del('${t}','${r.id}')">Delete</button></td></tr>`).join('')}</table></div>`;
 }
+const loc=x=>x?new Date(new Date(x)-new Date(x).getTimezoneOffset()*6e4).toISOString().slice(0,16):'';
 function edit(t,id){
   const c=T[t],r={...(id?cache[t].find(x=>x.id==id):{})};
   if(t==='questions'&&id){r.options=r.options.join('\n');r.answer=r.answer+1}
-  dlg.innerHTML=`<form id="df"><h3>${id?'Edit':'Add'} ${t.slice(0,-1)}</h3>${c.f.map(([k,l,ty])=>`<label>${l}${ty==='ta'?`<textarea name="${k}" rows="5">${esc(r[k])}</textarea>`:ty==='b'?`<input name="${k}" type="checkbox" ${r[k]!==false?'checked':''}>`:`<input name="${k}" type="${ty==='n'?'number':'text'}" value="${esc(r[k])}">`}</label>`).join('')}<button class="btn">Save</button> <button type="button" onclick="dlg.close()">Cancel</button></form>`;
+  dlg.innerHTML=`<form id="df"><h3>${id?'Edit':'Add'} ${t.replace('_',' ')}</h3>${c.f.map(([k,l,ty])=>`<label>${l}${ty==='ta'?`<textarea name="${k}" rows="5">${esc(r[k])}</textarea>`:ty==='b'?`<input name="${k}" type="checkbox" ${(id?r[k]:k==='published')?'checked':''}>`:ty==='dt'?`<input name="${k}" type="datetime-local" value="${loc(r[k])}" required>`:`<input name="${k}" type="${ty==='n'?'number':'text'}" value="${esc(r[k])}">`}</label>`).join('')}<button class="btn">Save</button> <button type="button" onclick="dlg.close()">Cancel</button></form>`;
   dlg.showModal();
   $('#df').onsubmit=async e=>{
     e.preventDefault();const row={};
-    c.f.forEach(([k,,ty])=>{const el=e.target.elements[k];row[k]=ty==='b'?el.checked:ty==='n'?(el.value===''?null:+el.value):el.value});
+    c.f.forEach(([k,,ty])=>{const el=e.target.elements[k];row[k]=ty==='b'?el.checked:ty==='n'?(el.value===''?null:+el.value):ty==='dt'?new Date(el.value).toISOString():el.value});
     if(id)row.id=id;
     if(t==='questions'){row.options=row.options.split('\n').map(s=>s.trim()).filter(Boolean);row.answer=row.answer-1}
     try{await api('a_save',{t,row});dlg.close();tab(cur)}catch(x){alert(x.message)}
   };
 }
-async function del(t,id){if(!confirm('Delete this '+t.slice(0,-1)+'? This cannot be undone.'))return;try{await api('a_del',{t,id});tab(cur)}catch(e){alert(e.message)}}
+async function del(t,id){if(!confirm('Delete this item? This cannot be undone.'))return;try{await api('a_del',{t,id});tab(cur)}catch(e){alert(e.message)}}
 async function rv(id,revoked){try{await api('a_cert',{id,revoked});tab(cur)}catch(e){alert(e.message)}}
+async function pay(id,status){if(!confirm(status==='approved'?'Approve this payment and unlock the course for the student?':'Reject this payment?'))return;try{await api('a_pay',{id,status});tab(cur)}catch(e){alert(e.message)}}
 async function aiq(){
   const m=prompt('Module ID for the new questions?');if(m===null)return;
   const topic=prompt('Topic, or paste lesson text:');if(!topic)return;
   try{const r=await api('a_quiz',{module_id:+m||null,topic,n:5});alert(r.added+' questions added');tab('questions')}catch(e){alert(e.message)}
 }
 async function settings(p){
-  const S=(await api('content')).settings,f=Array.isArray(S.faqs)?S.faqs:[];
-  p.innerHTML=`<form class="card" id="sf"><label>Hero title<input name="hero_title" value="${esc(S.hero_title)}"></label><label>Hero subtitle<textarea name="hero_sub" rows="3">${esc(S.hero_sub)}</textarea></label><label>Pass mark (%)<input name="pass_percent" type="number" value="${S.pass_percent||60}"></label><label>Questions in final test<input name="exam_questions" type="number" value="${S.exam_questions||10}"></label><label>FAQs (one per line: Question | Answer)<textarea name="faqs" rows="8">${esc(f.map(x=>x.q+' | '+x.a).join('\n'))}</textarea></label><button class="btn">Save settings</button></form>`;
+  const S=(await api('content')).settings,f=Array.isArray(S.faqs)?S.faqs:[],hi=Array.isArray(S.hero_images)?S.hero_images:[];
+  p.innerHTML=`<form class="card" id="sf"><label>Hero title<input name="hero_title" value="${esc(S.hero_title)}"></label><label>Hero subtitle<textarea name="hero_sub" rows="3">${esc(S.hero_sub)}</textarea></label>
+  <label>About the website (home page)<textarea name="about" rows="4">${esc(S.about)}</textarea></label>
+  <label>Hero background photos <small>(image links, one per line; they change randomly. Empty = built-in artwork)</small><textarea name="hero_images" rows="5">${esc(hi.join('\n'))}</textarea></label>
+  <label>Payment details shown to students <small>(bank account, JazzCash, EasyPaisa numbers)</small><textarea name="pay_info" rows="6">${esc(S.pay_info)}</textarea></label>
+  <label>Pass mark (%)<input name="pass_percent" type="number" value="${S.pass_percent||60}"></label><label>Questions in final test<input name="exam_questions" type="number" value="${S.exam_questions||10}"></label>
+  <label>FAQs (one per line: Question | Answer)<textarea name="faqs" rows="8">${esc(f.map(x=>x.q+' | '+x.a).join('\n'))}</textarea></label><button class="btn">Save settings</button></form>`;
   $('#sf').onsubmit=async e=>{
     e.preventDefault();const v=fv(e.target);
     const faqs=v.faqs.split('\n').filter(l=>l.includes('|')).map(l=>{const[q,...a]=l.split('|');return{q:q.trim(),a:a.join('|').trim()}});
-    try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
+    const imgs=v.hero_images.split('\n').map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s));
+    try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['about',v.about],['hero_images',imgs],['pay_info',v.pay_info],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
   };
 }
 show();
