@@ -2,7 +2,8 @@
 // Zero npm dependencies: Supabase via REST, Groq and Brevo via fetch.
 const crypto = require('crypto');
 const { SUPABASE_URL: SU, SUPABASE_SERVICE_KEY: SK, GROQ_API_KEY: GK, JWT_SECRET: JS, ADMIN_USER: AU, ADMIN_PASS: AP, BREVO_API_KEY: BK, MAIL_FROM: MF, SITE_URL } = process.env;
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+// llama-3.3-70b-versatile was shut down by Groq on 16 Aug 2026. Set GROQ_MODEL in Vercel to override the first choice.
+const MODELS = [process.env.GROQ_MODEL, 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.6-27b'].filter(Boolean);
 let HOST = '';
 
 const E = (m, c = 400) => Object.assign(new Error(m), { user: m, code: c });
@@ -55,14 +56,34 @@ const same = (x, y) => { x = String(x || ''); y = String(y || ''); return !!x &&
 
 async function ai(messages, json) {
   if (!GK) throw E('AI is not set up yet: add GROQ_API_KEY in Vercel and redeploy', 503);
-  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + GK, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: GROQ_MODEL, messages, temperature: 0.4, ...(json ? { response_format: { type: 'json_object' } } : {}) }),
-  });
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw E('AI service error: ' + ((d.error && d.error.message) || r.status), 502);
-  return d.choices?.[0]?.message?.content || '';
+  let last = '';
+  for (const model of MODELS) {
+    for (const useJson of json ? [true, false] : [false]) {
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + GK, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model, messages, temperature: 0.4, ...(useJson ? { response_format: { type: 'json_object' } } : {}) }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok) return d.choices?.[0]?.message?.content || '';
+      last = (d.error && d.error.message) || String(r.status);
+      if (r.status === 401 || r.status === 429) throw E('AI service error: ' + last, 502);
+    }
+  }
+  throw E('AI service error: ' + last, 502);
+}
+// Admin uploads (images / PDF) go to the public Supabase Storage bucket "media".
+async function upload(type, b64) {
+  const ext = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'application/pdf': 'pdf' }[type];
+  if (!ext) throw E('Only JPG, PNG, WebP images and PDF files are allowed');
+  const buf = Buffer.from(String(b64 || ''), 'base64');
+  if (!buf.length || buf.length > 3e6) throw E('File is too large (max 3 MB)');
+  const magic = { jpg: 'ffd8', png: '89504e47', webp: '52494646', pdf: '25504446' }[ext];
+  if (buf.subarray(0, magic.length / 2).toString('hex') !== magic) throw E('This file does not look like a valid ' + ext.toUpperCase());
+  const path = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}.${ext}`;
+  const r = await fetch(`${SU}/storage/v1/object/media/${path}`, { method: 'POST', headers: { ...H, 'Content-Type': type }, body: buf });
+  if (!r.ok) throw E('Upload failed. Did you run schema3.sql (it creates the media bucket)? ' + (await r.text()).slice(0, 150), 502);
+  return `${SU}/storage/v1/object/public/media/${path}`;
 }
 // Password-reset email through Brevo (free plan, verified sender address).
 async function mail(to, subject, html) {
@@ -273,6 +294,7 @@ async function route(a, b, me, adm) {
       need(adm);
       const ks = COLS[b.t]; if (!ks) throw E('Bad table');
       const row = pick(b.row || {}, ks);
+      if (b.t === 'gallery' && !S(row.image_url) && !S(row.link)) throw E('Add an image, or a link / PDF');
       if (b.t === 'questions') {
         if (!Array.isArray(row.options) || row.options.length < 2 || !(row.answer >= 0 && row.answer < row.options.length)) throw E('Add at least 2 options and a valid correct option number');
         row.answer |= 0;
@@ -302,6 +324,9 @@ async function route(a, b, me, adm) {
       await db(`payments?id=eq.${p.id}`, 'PATCH', { status: b.status }, 'return=minimal');
       return { ok: true };
     }
+    case 'a_upload':
+      need(adm);
+      return { url: await upload(b.type, b.data) };
     case 'a_set':
       need(adm);
       if (!SETTING_KEYS.includes(b.key)) throw E('Bad setting');
