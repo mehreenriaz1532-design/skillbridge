@@ -54,13 +54,14 @@ const check = (pw, h) => { const [s, k] = h.split(':'); return crypto.timingSafe
 const same = (x, y) => { x = String(x || ''); y = String(y || ''); return !!x && x.length === y.length && crypto.timingSafeEqual(Buffer.from(x), Buffer.from(y)); };
 
 async function ai(messages, json) {
+  if (!GK) throw E('AI is not set up yet: add GROQ_API_KEY in Vercel and redeploy', 503);
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + GK, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: GROQ_MODEL, messages, temperature: 0.4, ...(json ? { response_format: { type: 'json_object' } } : {}) }),
   });
-  const d = await r.json();
-  if (!r.ok) throw new Error(JSON.stringify(d));
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw E('AI service error: ' + ((d.error && d.error.message) || r.status), 502);
   return d.choices?.[0]?.message?.content || '';
 }
 // Password-reset email through Brevo (free plan, verified sender address).
@@ -336,4 +337,4 @@ module.exports = async (req, res) => {
     if (!e.user) console.error(e);
     res.status(e.code || 500).json({ error: e.user || 'Server error' });
   }
-}
+};
