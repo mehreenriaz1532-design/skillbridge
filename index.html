@@ -69,7 +69,7 @@ footer{text-align:center;color:var(--m);font-size:14px;padding:26px 18px;border-
 <body>
 <header><div class="w"><a class="logo" href="#/">🌉 SkillBridge</a><nav id="nav"></nav></div></header>
 <main id="app"></main>
-<footer>© 2026 SkillBridge. Developed by Mehreen Riaz – <a href="mailto:mehreenriaz1532@gmail.com">mehreenriaz1532@gmail.com</a></footer>
+<footer>© 2026 SkillBridge. Developed by Mehreen Riaz – <a href="mailto:mehreenriaz1532@gmail.com">mehreenriaz1532@gmail.com</a> · <a href="/admin.html">Admin</a></footer>
 <script>
 const $=s=>document.querySelector(s),app=$('#app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -127,6 +127,7 @@ async function home(){
   <section class="w narrow"><h2>Verify a certificate</h2><div class="card"><input id="vc" placeholder="Certificate ID, e.g. SB-1A2B3C4D"><p><button class="btn" onclick="go('#/verify/'+encodeURIComponent($('#vc').value.trim()))">Verify</button></p></div></section>
   <section class="w"><h2>Frequently asked questions</h2>${faq.map(f=>`<details class="card"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>`;
   slide(imgs.length?imgs:SC.map(scene));
+  if(tok)chatUI();
 }
 async function verifyV(code){
   const r=await api('verify',{code});
@@ -170,14 +171,14 @@ async function payV(id){
 /* ---------- accounts ---------- */
 function loginV(){
   app.innerHTML=`<form class="w narrow card" id="f"><h2>Welcome back</h2>${fld('cnic','CNIC','شناختی کارڈ نمبر')}${fld('password','Password','پاس ورڈ','password')}<button class="btn">Login</button><p><a href="#/forgot">Forgot password?</a> · <a href="#/register">Create an account</a></p></form>`;
-  $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('login',fv(e.target))).token);go('#/dash')}catch(x){err(x)}};
+  $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('login',fv(e.target))).token);go('#/')}catch(x){err(x)}};
 }
 function regV(){
   app.innerHTML=`<form class="w narrow card" id="f"><h2>Create an account</h2>
   ${fld('first_name','First name','پہلا نام')}${fld('middle_name','Middle name','درمیانی نام','text',0)}${fld('last_name','Last name','آخری نام')}${fld('dob','Date of birth','تاریخ پیدائش','date')}
   ${fld('cnic','CNIC (13 digits)','شناختی کارڈ نمبر')}${fld('cnic2','Confirm CNIC','شناختی کارڈ نمبر کی تصدیق')}${fld('email','Email address','ای میل ایڈریس','email')}${fld('phone','Mobile number','موبائل نمبر','tel',0)}${fld('password','Password (6+ characters)','پاس ورڈ','password')}
   <button class="btn">Create account</button><p><a href="#/login">I already have an account</a></p></form>`;
-  $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('register',fv(e.target))).token);go('#/dash')}catch(x){err(x)}};
+  $('#f').onsubmit=async e=>{e.preventDefault();try{setTok((await api('register',fv(e.target))).token);go('#/')}catch(x){err(x)}};
 }
 function forgotV(){
   app.innerHTML=`<form class="w narrow card" id="f"><h2>Forgot password</h2><p>Enter your CNIC or the email you registered with. We will email you a reset link.</p>${fld('who','CNIC or email','')}<button class="btn">Send reset link</button><p><a href="#/login">Back to login</a></p></form>`;
