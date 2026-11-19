@@ -45,7 +45,7 @@ const T={
   questions:{c:['id','module_id','question','answer'],f:[['module_id','Module ID','n'],['question','Question','ta'],['options','Options (one per line)','ta'],['answer','Correct option number (1, 2, 3...)','n']]},
   live_classes:{c:['id','course_id','title','starts_at','link'],f:[['course_id','Course ID (empty = all enrolled students)','n'],['title','Class title'],['starts_at','Date and time','dt'],['link','Zoom / Meet / YouTube Live link'],['notes','Notes for students','ta']]},
   announcements:{c:['id','title','pinned','created_at'],f:[['title','Title'],['body','Message','ta'],['pinned','Pin to top','b']]},
-  gallery:{c:['id','caption','image_url','position'],f:[['image_url','Image link (https://...)'],['caption','Caption'],['link','Click-through link (optional)'],['position','Order','n']]},
+  gallery:{c:['id','caption','image_url','link','position'],f:[['image_url','Image: choose a photo from your phone/computer, or paste an image link','img'],['caption','Caption'],['link','Link or PDF (optional): paste a Google Drive / any link, or choose a PDF','doc'],['position','Order','n']]},
   payments:{c:['id','trainees','courses','method','amount','trx_id','sender','proof_url','status','flags','created_at']},
   trainees:{c:['cnic','first_name','last_name','email','phone','created_at']},
   certificates:{c:['id','trainees','courses','score','issued_at','revoked']}
@@ -81,10 +81,12 @@ const loc=x=>x?new Date(new Date(x)-new Date(x).getTimezoneOffset()*6e4).toISOSt
 function edit(t,id){
   const c=T[t],r={...(id?cache[t].find(x=>x.id==id):{})};
   if(t==='questions'&&id){r.options=r.options.join('\n');r.answer=r.answer+1}
-  dlg.innerHTML=`<form id="df"><h3>${id?'Edit':'Add'} ${t.replace('_',' ')}</h3>${c.f.map(([k,l,ty])=>`<label>${l}${ty==='ta'?`<textarea name="${k}" rows="5">${esc(r[k])}</textarea>`:ty==='b'?`<input name="${k}" type="checkbox" ${(id?r[k]:k==='published')?'checked':''}>`:ty==='dt'?`<input name="${k}" type="datetime-local" value="${loc(r[k])}" required>`:`<input name="${k}" type="${ty==='n'?'number':'text'}" value="${esc(r[k])}">`}</label>`).join('')}<button class="btn">Save</button> <button type="button" onclick="dlg.close()">Cancel</button></form>`;
+  dlg.innerHTML=`<form id="df"><h3>${id?'Edit':'Add'} ${t.replace('_',' ')}</h3>${c.f.map(([k,l,ty])=>`<label>${l}${ty==='ta'?`<textarea name="${k}" rows="5">${esc(r[k])}</textarea>`:ty==='b'?`<input name="${k}" type="checkbox" ${(id?r[k]:k==='published')?'checked':''}>`:ty==='img'||ty==='doc'?`<input name="${k}" type="text" value="${esc(r[k])}"><input type="file" data-f="${k}" accept="${ty==='img'?'image/*':'application/pdf,image/*'}">`:ty==='dt'?`<input name="${k}" type="datetime-local" value="${loc(r[k])}" required>`:`<input name="${k}" type="${ty==='n'?'number':'text'}" value="${esc(r[k])}">`}</label>`).join('')}<button class="btn">Save</button> <button type="button" onclick="dlg.close()">Cancel</button></form>`;
   dlg.showModal();
+  dlg.querySelectorAll('input[type=file]').forEach(fi=>fi.onchange=async()=>{const f=fi.files[0];if(!f)return;const t=fi.previousElementSibling,old=t.value;t.value='Uploading…';try{t.value=await uploadFile(f)}catch(x){t.value=old;alert(x.message)}});
   $('#df').onsubmit=async e=>{
     e.preventDefault();const row={};
+    if([...e.target.querySelectorAll('input[type=text]')].some(i=>i.value==='Uploading…'))return alert('Please wait, the file is still uploading');
     c.f.forEach(([k,,ty])=>{const el=e.target.elements[k];row[k]=ty==='b'?el.checked:ty==='n'?(el.value===''?null:+el.value):ty==='dt'?new Date(el.value).toISOString():el.value});
     if(id)row.id=id;
     if(t==='questions'){row.options=row.options.split('\n').map(s=>s.trim()).filter(Boolean);row.answer=row.answer-1}
@@ -104,15 +106,30 @@ async function settings(p){
   p.innerHTML=`<form class="card" id="sf"><label>Hero title<input name="hero_title" value="${esc(S.hero_title)}"></label><label>Hero subtitle<textarea name="hero_sub" rows="3">${esc(S.hero_sub)}</textarea></label>
   <label>About the website (home page)<textarea name="about" rows="4">${esc(S.about)}</textarea></label>
   <label>Hero background photos <small>(image links, one per line; they change randomly. Empty = built-in artwork)</small><textarea name="hero_images" rows="5">${esc(hi.join('\n'))}</textarea></label>
+  <label>Upload a photo from your device <small>(its link is added to the list above; press Save settings after)</small><input type="file" id="hf" accept="image/*"></label>
   <label>Payment details shown to students <small>(bank account, JazzCash, EasyPaisa numbers)</small><textarea name="pay_info" rows="6">${esc(S.pay_info)}</textarea></label>
   <label>Pass mark (%)<input name="pass_percent" type="number" value="${S.pass_percent||60}"></label><label>Questions in final test<input name="exam_questions" type="number" value="${S.exam_questions||10}"></label>
   <label>FAQs (one per line: Question | Answer)<textarea name="faqs" rows="8">${esc(f.map(x=>x.q+' | '+x.a).join('\n'))}</textarea></label><button class="btn">Save settings</button></form>`;
+  $('#hf').onchange=async()=>{const f=$('#hf').files[0];if(!f)return;try{const u=await uploadFile(f),ta=document.querySelector('[name=hero_images]');ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+u}catch(x){alert(x.message)}$('#hf').value=''};
   $('#sf').onsubmit=async e=>{
     e.preventDefault();const v=fv(e.target);
     const faqs=v.faqs.split('\n').filter(l=>l.includes('|')).map(l=>{const[q,...a]=l.split('|');return{q:q.trim(),a:a.join('|').trim()}});
     const imgs=v.hero_images.split('\n').map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s));
     try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['about',v.about],['hero_images',imgs],['pay_info',v.pay_info],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
   };
+}
+// Photos are shrunk in the browser (max 1600px) so uploads stay small; PDFs are sent as they are (max 3 MB).
+async function uploadFile(f){
+  let type=f.type,data;
+  if(type.startsWith('image/')){
+    const bm=await createImageBitmap(f),k=Math.min(1,1600/Math.max(bm.width,bm.height)),c=document.createElement('canvas');
+    c.width=Math.round(bm.width*k);c.height=Math.round(bm.height*k);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
+    data=c.toDataURL('image/jpeg',.82).split(',')[1];type='image/jpeg';
+  }else if(type==='application/pdf'){
+    if(f.size>3e6)throw new Error('PDF is too large (max 3 MB)');
+    data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=no;r.readAsDataURL(f)});
+  }else throw new Error('Please choose an image or a PDF');
+  return (await api('a_upload',{type,data})).url;
 }
 show();
 </script>
