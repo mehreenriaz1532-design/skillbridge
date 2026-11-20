@@ -23,7 +23,7 @@ const COLS = {
   announcements: ['title', 'body', 'pinned'],
   gallery: ['image_url', 'caption', 'link', 'position'],
 };
-const SETTING_KEYS = ['hero_title', 'hero_sub', 'about', 'hero_images', 'pass_percent', 'exam_questions', 'pay_info', 'faqs', 'hero_cta', 'marquee_on', 'contact_email', 'contact_phone', 'contact_address'];
+const SETTING_KEYS = ['hero_title', 'hero_sub', 'about', 'hero_images', 'pass_percent', 'exam_questions', 'pay_info', 'faqs', 'hero_cta', 'hero_interval', 'marquee_on', 'contact_email', 'contact_phone', 'contact_address'];
 // Legacy service_role keys are JWTs ("eyJ...") and also go in Authorization; new sb_secret_ keys only use apikey.
 const H = { apikey: SK, ...(String(SK).startsWith('eyJ') ? { Authorization: 'Bearer ' + SK } : {}), 'Content-Type': 'application/json' };
 
