@@ -104,6 +104,11 @@ async function aiq(){
 async function settings(p){
   const S=(await api('content')).settings,f=Array.isArray(S.faqs)?S.faqs:[],hi=Array.isArray(S.hero_images)?S.hero_images:[];
   p.innerHTML=`<form class="card" id="sf"><label>Hero title<input name="hero_title" value="${esc(S.hero_title)}"></label><label>Hero subtitle<textarea name="hero_sub" rows="3">${esc(S.hero_sub)}</textarea></label>
+  <label>Hero button text<input name="hero_cta" value="${esc(S.hero_cta||'Start Learning')}"></label>
+  <label><input type="checkbox" name="marquee_on" ${S.marquee_on!==false?'checked':''}> Show the announcement bar above the menu <small>(its text comes from the Announcements tab; pinned ones get a gold HOT badge, the rest a green NEW badge)</small></label>
+  <label>Contact email<input name="contact_email" type="email" value="${esc(S.contact_email)}"></label>
+  <label>Contact phone<input name="contact_phone" value="${esc(S.contact_phone)}" placeholder="+92 300 1234567"></label>
+  <label>Contact address (optional)<input name="contact_address" value="${esc(S.contact_address)}"></label>
   <label>About the website (home page)<textarea name="about" rows="4">${esc(S.about)}</textarea></label>
   <label>Hero background photos <small>(image links, one per line; they change randomly. Empty = built-in artwork)</small><textarea name="hero_images" rows="5">${esc(hi.join('\n'))}</textarea></label>
   <label>Upload a photo from your device <small>(its link is added to the list above; press Save settings after)</small><input type="file" id="hf" accept="image/*"></label>
@@ -115,7 +120,7 @@ async function settings(p){
     e.preventDefault();const v=fv(e.target);
     const faqs=v.faqs.split('\n').filter(l=>l.includes('|')).map(l=>{const[q,...a]=l.split('|');return{q:q.trim(),a:a.join('|').trim()}});
     const imgs=v.hero_images.split('\n').map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s));
-    try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['about',v.about],['hero_images',imgs],['pay_info',v.pay_info],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
+    try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['hero_cta',v.hero_cta],['marquee_on',e.target.elements.marquee_on.checked],['contact_email',v.contact_email],['contact_phone',v.contact_phone],['contact_address',v.contact_address],['about',v.about],['hero_images',imgs],['pay_info',v.pay_info],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
   };
 }
 // Photos are shrunk in the browser (max 1600px) so uploads stay small; PDFs are sent as they are (max 3 MB).
