@@ -22,11 +22,13 @@ nav a.btn{color:var(--pt)}
 .btn.a{background:var(--a);color:#1b1200}.btn.o{background:none;border:1.5px solid currentColor;color:inherit}
 .btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--a);outline-offset:2px}
 .hero{position:relative;overflow:hidden;background:#0b2e24;color:#fff}
-.fl{position:absolute;inset:0;z-index:0}
-.fc{position:absolute;border-radius:14px;background-size:cover;background-position:center;border:3px solid #ffffff2e;box-shadow:0 12px 30px #0009;opacity:.85;transform:rotate(var(--r));animation:drift var(--d) ease-in-out var(--dl) infinite alternate;will-change:transform}
-@keyframes drift{from{transform:translate(0,0) rotate(var(--r))}to{transform:translate(var(--x),var(--y)) rotate(calc(var(--r) + var(--rr)))}}
-.hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,18,14,.84),rgba(5,18,14,.62) 45%,rgba(5,18,14,.9))}
-.hi{position:relative;z-index:2;text-align:center;padding:76px 18px 44px}.hero h1{text-shadow:0 2px 18px #000a}.hero p{max-width:62ch;margin:0 auto 18px;color:#e6ece8}
+.hbs{position:absolute;inset:0;z-index:0}
+.hb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1);transition:opacity 1.2s ease,transform 9s ease-out}.hb.on{opacity:1;transform:scale(1.08)}
+.ar{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid #ffffff77;background:#0007;color:#fff;font-size:24px;line-height:1;cursor:pointer}.ar:hover{background:#000a}.ar.l{left:14px}.ar.r{right:14px}
+.dots{position:absolute;bottom:14px;left:0;right:0;z-index:3;display:flex;justify-content:center;gap:8px}.dots button{width:10px;height:10px;padding:0;border:0;border-radius:6px;background:#ffffff77;cursor:pointer;transition:width .3s}.dots button.on{width:26px;background:#fff}
+.hero{display:flex;align-items:center;justify-content:center;min-height:min(80vh,620px)}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,18,14,.62),rgba(5,18,14,.48) 50%,rgba(5,18,14,.82))}
+.hi{position:relative;z-index:2;width:100%;text-align:center;padding:84px 18px 64px}.hero h1{text-shadow:0 2px 18px #000a}.hero p{max-width:62ch;margin:0 auto 18px;color:#e6ece8}
 .sb{display:flex;max-width:560px;margin:22px auto 0;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid #ffffff44;border-radius:999px;padding:5px}
 .sb input{flex:1;min-width:0;margin:0;background:transparent;border:0;color:#fff;padding:10px 16px;border-radius:999px}.sb input::placeholder{color:#e6ece8aa}.sb .btn{border-radius:999px}
 .sb.lt{background:var(--c);border-color:var(--b);max-width:none;margin:0 0 18px}.sb.lt input{color:var(--t)}.sb.lt input::placeholder{color:var(--m)}
@@ -39,7 +41,7 @@ nav a.btn{color:var(--pt)}
 .bdg{padding:1px 9px;border-radius:99px;font-size:11px;letter-spacing:.06em}
 .bdg.g{background:linear-gradient(#ffe38a,#e0a800);color:#3a2a00;box-shadow:0 0 10px #ffd54fcc}
 .bdg.n{background:#39ff88;color:#04210f;box-shadow:0 0 10px #39ff88cc}
-@media(prefers-reduced-motion:reduce){.fc,.mqt,.mq::after{animation:none}.mq{overflow-x:auto}}
+@media(prefers-reduced-motion:reduce){.mqt,.mq::after{animation:none}.mq{overflow-x:auto}.hb{transition:opacity 1.2s}}
 .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 36px;margin-top:34px;padding-top:20px;border-top:1px solid #ffffff44}
 .stats div{font-size:14px;color:#d0d8ee}.stats b{display:block;font-size:30px;color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
@@ -118,20 +120,19 @@ async function render(){
 }
 addEventListener('hashchange',render);render();
 
-/* ---------- hero: floating, drifting photo cards, randomised on every load ---------- */
-const TOPICS=[['📚','Books','#0b3d2e','#1f7a5a'],['💻','Coding','#262626','#5c4a32'],['🎓','Courses','#14452f','#7fb069'],['🧑‍💻','Online class','#4a1c1c','#9c4a3a'],['✏️','Study','#232826','#4b5a52'],['🌐','Learn anywhere','#3b2f1e','#b08a3e'],['🗣️','Communication','#0f3d3a','#2f8f83'],['🤝','Teamwork','#33261a','#8a6a3c']];
-const art=t=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${t[2]}'/><stop offset='1' stop-color='${t[3]}'/></linearGradient></defs><rect width='400' height='300' fill='url(#g)'/><text x='200' y='170' font-size='120' text-anchor='middle'>${t[0]}</text><text x='200' y='260' font-size='26' fill='#fff' fill-opacity='.8' text-anchor='middle' font-family='sans-serif'>${t[1]}</text></svg>`);
-const rnd=(a,b)=>a+Math.random()*(b-a);
-function floaters(urls){
-  const box=$('#fl');if(!box)return;
-  const sm=innerWidth<700,n=sm?8:14,cols=sm?3:5,rows=Math.ceil(n/cols);
-  const pool=[];for(let i=0;i<n;i++)pool.push(urls[i%urls.length]);
-  pool.sort(()=>Math.random()-.5);
-  box.innerHTML=pool.map((u,i)=>{
-    const w=rnd(120,230)|0,hh=(w*rnd(.7,1.3))|0,cx=i%cols,cy=(i/cols)|0;
-    const l=(cx+rnd(-.1,.7))/cols*100,t=(cy+rnd(-.1,.7))/rows*100;
-    return `<div class="fc" style="width:${w}px;height:${hh}px;left:${l.toFixed(1)}%;top:${t.toFixed(1)}%;background-image:url('${u.replace(/'/g,'%27').replace(/"/g,'%22')}');--r:${rnd(-14,14).toFixed(1)}deg;--rr:${rnd(-7,7).toFixed(1)}deg;--x:${rnd(-35,35)|0}px;--y:${rnd(-35,35)|0}px;--d:${rnd(14,26).toFixed(1)}s;--dl:-${rnd(0,20).toFixed(1)}s"></div>`;
-  }).join('');
+/* ---------- hero: background carousel (photos come from the admin; fades every few seconds) ---------- */
+const SCN=[['#0b3d2e','#1f7a5a'],['#262626','#5c4a32'],['#14452f','#7fb069'],['#4a1c1c','#9c4a3a'],['#232826','#4b5a52'],['#3b2f1e','#b08a3e']];
+const scene=(c,i)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c[0]}'/><stop offset='1' stop-color='${c[1]}'/></linearGradient></defs><rect width='1200' height='600' fill='url(#g)'/><circle cx='${200+i*160}' cy='140' r='70' fill='#fff' opacity='.15'/><path d='M0 520 L150 380 L300 500 L470 330 L640 490 L800 360 L1000 500 L1200 400 V600 H0Z' fill='#000' opacity='.28'/></svg>`);
+function slider(urls,sec){
+  urls=urls.slice(0,10);const box=$('#hbs'),dots=$('#dots');
+  box.innerHTML=urls.map(u=>`<div class="hb" style="background-image:url('${u.replace(/'/g,'%27').replace(/"/g,'%22')}')"></div>`).join('');
+  dots.innerHTML=urls.map((_,k)=>`<button aria-label="Slide ${k+1}"></button>`).join('');
+  const sl=[...box.children],dt=[...dots.children];let i=0;
+  const show=n=>{i=(n+sl.length)%sl.length;sl.forEach((s,k)=>s.classList.toggle('on',k===i));dt.forEach((d,k)=>d.classList.toggle('on',k===i))};
+  const run=()=>{clearInterval(hT);if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches)hT=setInterval(()=>show(i+1),sec*1000)};
+  show(Math.random()*sl.length|0);run();
+  $('#pv').onclick=()=>{show(i-1);run()};$('#nx').onclick=()=>{show(i+1);run()};dt.forEach((d,k)=>d.onclick=()=>{show(k);run()});
+  if(sl.length<2)$('#pv').hidden=$('#nx').hidden=dots.hidden=true;
 }
 /* ---------- announcement bar above the menu (text comes from the admin Announcements tab) ---------- */
 async function loadMq(){
@@ -149,7 +150,7 @@ const cardC=c=>`<a class="card cc" href="#/course/${c.id}"><div class="ic">${esc
 async function home(){
   const [c,s]=await Promise.all([api('content'),api('stats')]),S=c.settings,faq=Array.isArray(S.faqs)?S.faqs:[];
   const imgs=(Array.isArray(S.hero_images)?S.hero_images:[]).filter(okUrl);
-  app.innerHTML=`<section class="hero"><div class="fl" id="fl" aria-hidden="true"></div><div class="w hi"><h1>${esc(S.hero_title)}</h1><p>${esc(S.hero_sub)}</p>
+  app.innerHTML=`<section class="hero"><div class="hbs" id="hbs" aria-hidden="true"></div><button class="ar l" id="pv" aria-label="Previous photo">‹</button><button class="ar r" id="nx" aria-label="Next photo">›</button><div class="dots" id="dots"></div><div class="w hi"><h1>${esc(S.hero_title)}</h1><p>${esc(S.hero_sub)}</p>
   <p><a class="btn a" href="${tok?'#/courses':'#/register'}">${esc(S.hero_cta||'Start Learning')}</a></p>
   <form class="sb" id="hs"><input id="hq" placeholder="Search courses, e.g. English or communication" aria-label="Search courses"><button class="btn">Search</button></form>
   <div class="stats">${[['Trainees',s.trainees],['Completion rate',s.rate+'%'],['Certificates issued',s.certificates],['Lessons',s.lessons]].map(x=>`<div><b>${x[1]}</b>${x[0]}</div>`).join('')}</div></div></section>
@@ -161,7 +162,7 @@ async function home(){
   <section class="w narrow"><h2>Verify a certificate</h2><div class="card"><input id="vc" placeholder="Certificate ID, e.g. SB-1A2B3C4D"><p><button class="btn" onclick="go('#/verify/'+encodeURIComponent($('#vc').value.trim()))">Verify</button></p></div></section>
   ${(()=>{const ce=/^\S+@\S+\.\S+$/.test(S.contact_email||'')?S.contact_email:'',cp=String(S.contact_phone||'').trim(),ad=String(S.contact_address||'').trim();return ce||cp||ad?`<section class="w" id="contact"><h2>Contact us</h2><div class="grid">${ce?`<a class="card cc" href="mailto:${esc(ce)}"><div class="ic">✉️</div><h3>Email</h3><p>${esc(ce)}</p></a>`:''}${cp?`<a class="card cc" href="tel:${esc(cp.replace(/[^\d+]/g,''))}"><div class="ic">📞</div><h3>Phone</h3><p>${esc(cp)}</p></a>`:''}${ad?`<div class="card"><div class="ic">📍</div><h3>Address</h3><p>${esc(ad)}</p></div>`:''}</div></section>`:''})()}
   <section class="w"><h2>Frequently asked questions</h2>${faq.map(f=>`<details class="card"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>`;
-  floaters(imgs.length?imgs:TOPICS.map(art));
+  slider(imgs.length?imgs:SCN.map(scene),Math.min(15,Math.max(3,+S.hero_interval||5)));
   $('#hs').onsubmit=e=>{e.preventDefault();go('#/courses/'+encodeURIComponent($('#hq').value.trim()))};
   if(tok)chatUI();
 }
