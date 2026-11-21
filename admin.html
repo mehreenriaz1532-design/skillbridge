@@ -15,7 +15,7 @@
 button,.btn{padding:8px 14px;border:1px solid var(--b);border-radius:8px;background:var(--c);color:var(--t);font:inherit;cursor:pointer}
 .btn{background:var(--p);color:var(--pt);border:0;font-weight:600}.btn.a{background:var(--a);color:#1b1200}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}.tabs button.on{background:var(--p);color:var(--pt)}
-input,textarea{width:100%;padding:9px 11px;margin:4px 0 10px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
+input,textarea,select{width:100%;padding:9px 11px;margin:4px 0 10px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
 input[type=checkbox]{width:auto}label{font-weight:600;font-size:14px;display:block}small{color:var(--m);font-weight:400}
 .sc{overflow-x:auto}table{border-collapse:collapse;width:100%;background:var(--c)}th,td{padding:8px 10px;border-bottom:1px solid var(--b);text-align:left;vertical-align:top;font-size:14px}td button{margin:0 4px 4px 0;padding:4px 10px}
 dialog{width:min(580px,94vw);max-height:90vh;overflow:auto;border:1px solid var(--b);border-radius:12px;background:var(--c);color:var(--t)}
@@ -75,7 +75,7 @@ const fmt=v=>v&&typeof v==='object'?(v.first_name?v.first_name+' '+v.last_name:v
 const cell=(k,v)=>k==='rating'?'★'.repeat(v|0)+'☆'.repeat(5-(v|0)):k==='message'?esc(v):/_at$/.test(k)&&v?esc(new Date(v).toLocaleString()):k==='proof_url'&&/^https?:\/\//i.test(v||'')?`<a href="${esc(v)}" target="_blank" rel="noopener">view</a>`:k==='flags'&&v?`<b style="color:#c0392b">${esc(v)}</b>`:esc(fmt(v));
 async function list(t,p){
   const rows=await api('a_list',{t}),c=T[t];cache[t]=rows;
-  p.innerHTML=`<p>${c.f?`<button class="btn" onclick="edit('${t}')">+ Add</button> `:''}${t==='questions'?'<button class="btn a" onclick="aiq()">✨ Generate with AI</button>':''}${t==='payments'?'<small>Red flags = suspicious. Check them before you approve.</small>':''}</p>
+  p.innerHTML=`<p>${c.f?`<button class="btn" onclick="edit('${t}')">+ Add</button> `:''}${t==='questions'?'<button class="btn a" onclick="aiq()">✨ Generate with AI</button>':''}${t==='lessons'?'<button class="btn a" onclick="ail()">✨ Write a lesson with AI</button>':''}${t==='payments'?'<small>Red flags = suspicious. Check them before you approve.</small>':''}</p>
   <div class="sc"><table><tr>${c.c.map(k=>`<th>${k}</th>`).join('')}<th></th></tr>${rows.map(r=>`<tr>${c.c.map(k=>`<td>${cell(k,r[k])}</td>`).join('')}<td>${c.f?`<button onclick="edit('${t}',${r.id})">Edit</button>`:''}${t==='certificates'?`<button onclick="rv('${r.id}',${!r.revoked})">${r.revoked?'Restore':'Revoke'}</button>`:''}${t==='payments'&&r.status==='pending'?`<button onclick="pay(${r.id},'approved')">Approve</button><button onclick="pay(${r.id},'rejected')">Reject</button>`:''}<button onclick="del('${t}','${r.id}')">Delete</button></td></tr>`).join('')}</table></div>`;
 }
 const loc=x=>x?new Date(new Date(x)-new Date(x).getTimezoneOffset()*6e4).toISOString().slice(0,16):'';
@@ -102,11 +102,18 @@ async function aiq(){
   const topic=prompt('Topic, or paste lesson text:');if(!topic)return;
   try{const r=await api('a_quiz',{module_id:+m||null,topic,n:5});alert(r.added+' questions added');tab('questions')}catch(e){alert(e.message)}
 }
+async function ail(){
+  const m=prompt('Module ID for the new lesson? (see the Modules tab)');if(!m)return;
+  const title=prompt('Lesson title:');if(!title)return;
+  const notes=prompt('Points to cover (optional):')||'';
+  try{await api('a_lesson',{module_id:+m,title,notes});alert('Lesson added. Open it from the Lessons tab to edit.');tab('lessons')}catch(e){alert(e.message)}
+}
 async function settings(p){
   const S=(await api('content')).settings,f=Array.isArray(S.faqs)?S.faqs:[],hi=Array.isArray(S.hero_images)?S.hero_images:[];
   p.innerHTML=`<form class="card" id="sf"><label>Hero title<input name="hero_title" value="${esc(S.hero_title)}"></label><label>Hero subtitle<textarea name="hero_sub" rows="3">${esc(S.hero_sub)}</textarea></label>
   <label>Hero button text<input name="hero_cta" value="${esc(S.hero_cta||'Start Learning')}"></label>
   <label>Hero photo changes every (seconds, 3 to 15)<input name="hero_interval" type="number" min="3" max="15" value="${S.hero_interval||5}"></label>
+  <label>How photos fit the banner<select name="hero_fit">${[['auto','Auto: show the whole photo when filling would cut too much'],['cover','Fill the banner (edges may be cut)'],['contain','Always show the whole photo']].map(o=>`<option value="${o[0]}" ${(S.hero_fit||'auto')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label>
   <label><input type="checkbox" name="marquee_on" ${S.marquee_on!==false?'checked':''}> Show the news ticker below the home banner <small>(its text comes from the Announcements tab; pinned ones get a gold HOT badge, the rest a green NEW badge)</small></label>
   <label><input type="checkbox" name="show_stats" ${S.show_stats!==false?'checked':''}> Show learner numbers on the home page <small>(only once there are at least the number below)</small></label>
   <label>Show learner numbers from (minimum learners)<input name="stats_min" type="number" min="0" value="${S.stats_min??25}"></label>
@@ -125,7 +132,7 @@ async function settings(p){
     e.preventDefault();const v=fv(e.target);
     const faqs=v.faqs.split('\n').filter(l=>l.includes('|')).map(l=>{const[q,...a]=l.split('|');return{q:q.trim(),a:a.join('|').trim()}});
     const imgs=v.hero_images.split('\n').map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s));
-    try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['hero_cta',v.hero_cta],['hero_interval',Math.min(15,Math.max(3,+v.hero_interval||5))],['marquee_on',e.target.elements.marquee_on.checked],['contact_email',v.contact_email],['contact_phone',v.contact_phone],['contact_whatsapp',v.contact_whatsapp],['show_stats',e.target.elements.show_stats.checked],['stats_min',Math.max(0,+v.stats_min||0)],['contact_address',v.contact_address],['about',v.about],['hero_images',imgs],['pay_info',v.pay_info],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
+    try{await Promise.all([['hero_title',v.hero_title],['hero_sub',v.hero_sub],['hero_cta',v.hero_cta],['hero_interval',Math.min(15,Math.max(3,+v.hero_interval||5))],['hero_fit',v.hero_fit||'auto'],['marquee_on',e.target.elements.marquee_on.checked],['contact_email',v.contact_email],['contact_phone',v.contact_phone],['contact_whatsapp',v.contact_whatsapp],['show_stats',e.target.elements.show_stats.checked],['stats_min',Math.max(0,+v.stats_min||0)],['contact_address',v.contact_address],['about',v.about],['hero_images',imgs],['pay_info',v.pay_info],['pass_percent',+v.pass_percent],['exam_questions',+v.exam_questions],['faqs',faqs]].map(([key,value])=>api('a_set',{key,value})));alert('Settings saved')}catch(x){alert(x.message)}
   };
 }
 // Photos are shrunk in the browser (max 1600px) so uploads stay small; PDFs are sent as they are (max 3 MB).
