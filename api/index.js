@@ -23,7 +23,7 @@ const COLS = {
   announcements: ['title', 'body', 'pinned'],
   gallery: ['image_url', 'caption', 'link', 'position'],
 };
-const SETTING_KEYS = ['hero_title', 'hero_sub', 'about', 'hero_images', 'pass_percent', 'exam_questions', 'pay_info', 'faqs', 'hero_cta', 'hero_interval', 'contact_whatsapp', 'show_stats', 'stats_min', 'marquee_on', 'contact_email', 'contact_phone', 'contact_address'];
+const SETTING_KEYS = ['hero_title', 'hero_sub', 'about', 'hero_images', 'pass_percent', 'exam_questions', 'pay_info', 'faqs', 'hero_cta', 'hero_interval', 'contact_whatsapp', 'show_stats', 'stats_min', 'hero_fit', 'marquee_on', 'contact_email', 'contact_phone', 'contact_address'];
 // Legacy service_role keys are JWTs ("eyJ...") and also go in Authorization; new sb_secret_ keys only use apikey.
 const H = { apikey: SK, ...(String(SK).startsWith('eyJ') ? { Authorization: 'Bearer ' + SK } : {}), 'Content-Type': 'application/json' };
 
@@ -343,6 +343,19 @@ async function route(a, b, me, adm) {
       if (!SETTING_KEYS.includes(b.key)) throw E('Bad setting');
       await db('settings', 'POST', { key: b.key, value: b.value }, 'resolution=merge-duplicates,return=minimal');
       return { ok: true };
+    case 'a_lesson': {
+      need(adm);
+      const title = S(b.title).slice(0, 120), mid = b.module_id | 0;
+      if (!title || !mid) throw E('Enter a module ID and a lesson title');
+      const content = (await ai([
+        { role: 'system', content: 'You write short lessons for a soft-skills course for workers going abroad. Use simple English, 120 to 180 words, short paragraphs and 3 to 5 bullet points that start with "• ". Plain text only: no markdown, no title line.' },
+        { role: 'user', content: `Lesson title: ${title}` + (S(b.notes) ? `\nCover these points: ${S(b.notes).slice(0, 500)}` : '') },
+      ])).replace(/\*\*|^#+\s*/gm, '').trim();
+      if (!content) throw E('AI returned nothing, try again');
+      const last = await db(`lessons?module_id=eq.${mid}&select=position&order=position.desc&limit=1`);
+      const [l] = await db('lessons', 'POST', { module_id: mid, title, content, position: ((last[0] && last[0].position) || 0) + 1 });
+      return { id: l.id };
+    }
     case 'a_quiz': {
       need(adm);
       const n = Math.min(b.n | 0 || 5, 10);
