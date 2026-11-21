@@ -23,7 +23,7 @@ const COLS = {
   announcements: ['title', 'body', 'pinned'],
   gallery: ['image_url', 'caption', 'link', 'position'],
 };
-const SETTING_KEYS = ['hero_title', 'hero_sub', 'about', 'hero_images', 'pass_percent', 'exam_questions', 'pay_info', 'faqs', 'hero_cta', 'hero_interval', 'marquee_on', 'contact_email', 'contact_phone', 'contact_address'];
+const SETTING_KEYS = ['hero_title', 'hero_sub', 'about', 'hero_images', 'pass_percent', 'exam_questions', 'pay_info', 'faqs', 'hero_cta', 'hero_interval', 'contact_whatsapp', 'show_stats', 'stats_min', 'marquee_on', 'contact_email', 'contact_phone', 'contact_address'];
 // Legacy service_role keys are JWTs ("eyJ...") and also go in Authorization; new sb_secret_ keys only use apikey.
 const H = { apikey: SK, ...(String(SK).startsWith('eyJ') ? { Authorization: 'Bearer ' + SK } : {}), 'Content-Type': 'application/json' };
 
@@ -109,8 +109,10 @@ async function route(a, b, me, adm) {
   switch (a) {
     // ---------- public ----------
     case 'stats': {
-      const [t, c, l] = await Promise.all([cnt('trainees'), cnt('certificates', '&revoked=eq.false'), cnt('lessons')]);
-      return { trainees: t, certificates: c, lessons: l, rate: t ? Math.round((c / t) * 100) : 0 };
+      const [t, c, l, co, ct] = await Promise.all([cnt('trainees'), cnt('certificates', '&revoked=eq.false'), cnt('lessons'), cnt('courses', '&published=eq.true'), db('certificates?select=trainee_id&revoked=eq.false&limit=1000')]);
+      // completion rate = learners who earned at least one certificate / all learners (never above 100%)
+      const done = new Set(ct.map((x) => x.trainee_id)).size;
+      return { trainees: t, certificates: c, lessons: l, courses: co, rate: t ? Math.min(100, Math.round((done / t) * 100)) : 0 };
     }
     case 'content': {
       const [courses, announcements, gallery, st] = await Promise.all([
@@ -169,6 +171,14 @@ async function route(a, b, me, adm) {
       if (!r) throw E('This reset link is invalid or has expired');
       await db(`trainees?id=eq.${r.trainee_id}`, 'PATCH', { password_hash: hash(String(b.password)) }, 'return=minimal');
       await db(`resets?token_hash=eq.${h}`, 'PATCH', { used: true }, 'return=minimal');
+      return { ok: true };
+    }
+    case 'feedback': {
+      if (S(b.website)) return { ok: true }; // hidden field: only bots fill it
+      const name = S(b.name).slice(0, 60), message = S(b.message).slice(0, 600), rating = b.rating | 0;
+      if (!name || !message || rating < 1 || rating > 5) throw E('Please enter your name, a star rating and a message');
+      if ((await cnt('feedback', `&created_at=gt.${enc(new Date(Date.now() - 6e5).toISOString())}`)) >= 30) throw E('Too many submissions right now. Please try again later.');
+      await db('feedback', 'POST', { name, rating, message }, 'return=minimal');
       return { ok: true };
     }
     case 'admin_login':
@@ -270,8 +280,8 @@ async function route(a, b, me, adm) {
     // ---------- admin ----------
     case 'a_stats': {
       need(adm);
-      const [s, co, q, pp, at] = await Promise.all([route('stats'), cnt('courses'), cnt('questions'), cnt('payments', '&status=eq.pending'), cnt('attempts')]);
-      return { ...s, courses: co, questions: q, pending_payments: pp, attempts: at };
+      const [s, co, q, pp, at, fb] = await Promise.all([route('stats'), cnt('courses'), cnt('questions'), cnt('payments', '&status=eq.pending'), cnt('attempts'), cnt('feedback')]);
+      return { ...s, courses: co, questions: q, pending_payments: pp, attempts: at, feedback: fb };
     }
     case 'a_list': {
       need(adm);
@@ -286,6 +296,7 @@ async function route(a, b, me, adm) {
         payments: 'payments?select=*,trainees(first_name,last_name,cnic),courses(title)&order=created_at.desc&limit=300',
         trainees: 'trainees?select=id,cnic,first_name,last_name,email,phone,created_at&order=created_at.desc&limit=500',
         certificates: 'certificates?select=*,trainees(first_name,last_name,cnic),courses(title)&order=issued_at.desc&limit=500',
+        feedback: 'feedback?select=*&order=created_at.desc&limit=500',
       }[b.t];
       if (!q) throw E('Bad table');
       return db(q);
@@ -305,7 +316,7 @@ async function route(a, b, me, adm) {
     }
     case 'a_del':
       need(adm);
-      if (![...Object.keys(COLS), 'trainees', 'certificates', 'payments'].includes(b.t)) throw E('Bad table');
+      if (![...Object.keys(COLS), 'trainees', 'certificates', 'payments', 'feedback'].includes(b.t)) throw E('Bad table');
       await db(`${b.t}?id=eq.${enc(b.id)}`, 'DELETE', null, 'return=minimal');
       return { ok: true };
     case 'a_cert':
