@@ -21,9 +21,9 @@ nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}nav a{text-decoratio
 nav a.btn{color:var(--pt)}
 .btn.a{background:var(--a);color:#1b1200}.btn.o{background:none;border:1.5px solid currentColor;color:inherit}
 .btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--a);outline-offset:2px}
-.hero{position:relative;overflow:hidden;background:#0b2e24;color:#fff;display:flex;align-items:center;justify-content:center;min-height:360px}
-.hbs{position:absolute;inset:0;z-index:0}
-.hb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;z-index:0;transition:opacity 1s ease}
+.hero{position:relative;overflow:hidden;background:#0b2e24;color:#fff;display:flex;align-items:center;justify-content:center;min-height:clamp(380px,34vw,520px)}
+.hbs{position:absolute;inset:0;z-index:0;background:#0b1511}
+.hb{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;z-index:0;transition:opacity 1s ease}
 .hb.prev{opacity:1;z-index:1;transition:none}.hb.on{opacity:1;z-index:2}
 .hero::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(180deg,rgba(5,18,14,.62),rgba(5,18,14,.5) 50%,rgba(5,18,14,.82))}
 .ar{position:absolute;top:50%;z-index:4;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid #ffffff88;background:#0b1511;color:#fff;font-size:24px;line-height:1;cursor:pointer}.ar:hover{background:#000}.ar.l{left:14px}.ar.r{right:14px}
@@ -34,7 +34,8 @@ nav a.btn{color:var(--pt)}
 .sb{display:flex;flex:1 1 280px;max-width:440px;background:#101713;border:1px solid #3a4d43;border-radius:10px;padding:4px}
 .sb input{flex:1;min-width:0;margin:0;background:#101713;border:0;color:#fff;padding:8px 12px;border-radius:8px}.sb input::placeholder{color:#9aaaa1}.sb .btn{border-radius:8px}
 .sb.lt{background:var(--c);border-color:var(--b);max-width:none;margin:0 0 18px}.sb.lt input{background:var(--c);color:var(--t)}.sb.lt input::placeholder{color:var(--m)}
-.tick{background:#0f2a21;border-bottom:1px solid #1f3d31;color:#f1ecd6;font-size:14px}.tick .w{padding:8px 18px;overflow:hidden;white-space:nowrap}
+.tick{background:#0f2a21;border-bottom:1px solid #1f3d31;color:#f1ecd6;font-size:14px}.tw{display:flex;align-items:stretch}.tl{flex:none;display:flex;align-items:center;background:#f5c542;color:#2b2000;font-weight:800;font-size:13px;letter-spacing:.06em;padding:8px 16px}
+.tv{flex:1;min-width:0;overflow:hidden;white-space:nowrap;padding:8px 0}
 .mqt{display:flex;width:max-content}.mqt.run{animation:mq var(--mqd,30s) linear infinite}.tick:hover .mqt.run{animation-play-state:paused}
 @keyframes mq{to{transform:translateX(-50%)}}
 .mi{flex:none;margin-right:44px;display:inline-flex;align-items:center;gap:8px}
@@ -45,7 +46,7 @@ nav a.btn{color:var(--pt)}
 .st button{background:none;border:0;padding:0 2px;font-size:32px;line-height:1;color:var(--b);cursor:pointer}.st button.on{color:#f5b301}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}#fc{margin-bottom:6px}
 @media(max-width:560px){.hi{padding:36px 54px 48px}}
-@media(prefers-reduced-motion:reduce){.mqt.run{animation:none}.hb{transition:none}}
+@media(prefers-reduced-motion:reduce){.mqt.run{animation:none}.tv{overflow-x:auto}.hb{transition:none}}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 .card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:18px;margin:0 0 14px}
 .grid .card{margin:0}.card h3{margin-bottom:.3em}.ic{font-size:30px}
@@ -88,6 +89,7 @@ footer{text-align:center;color:var(--m);font-size:14px;padding:26px 18px;border-
 <main id="app"></main>
 <footer><div id="fc"></div>© 2026 SkillBridge. Developed by Mehreen Riaz – <a href="mailto:mehreenriaz1532@gmail.com">mehreenriaz1532@gmail.com</a> · <a href="/admin.html">Admin</a></footer>
 <script>
+if('scrollRestoration' in history)history.scrollRestoration='manual';
 const $=s=>document.querySelector(s),app=$('#app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let tok=localStorage.getItem('t'),D=null,hist=[],hT;
@@ -115,19 +117,23 @@ async function render(){
   try{
     if(['dash','learn','lesson','exam','cert','pay'].includes(r)&&!tok)return go('#/login');
     window.scrollTo(0,0);
-    await({login:loginV,register:regV,forgot:forgotV,reset:()=>resetV(p),courses:()=>coursesV(p),contact:async()=>{await home();$('#contact')?.scrollIntoView()},course:()=>courseV(p),pay:()=>payV(p),dash,learn:()=>learn(p),lesson:()=>lesson(p),exam:()=>exam(p),cert:()=>cert(p),verify:()=>verifyV(p)}[r]||home)();
+    await({login:loginV,register:regV,forgot:forgotV,reset:()=>resetV(p),courses:()=>coursesV(p),contact:async()=>{await home();$('#contact')?.scrollIntoView()},course:()=>courseV(p),pay:()=>payV(p),dash,learn:()=>learn(p),lesson:()=>lesson(p),exam:()=>exam(p),cert:()=>cert(p),verify:()=>verifyV(p)}[r]||home)();if(r!=='contact')window.scrollTo(0,0);
   }catch(e){app.innerHTML=`<div class="w"><p class="bad">${esc(e.message)}</p></div>`}
 }
 addEventListener('hashchange',render);render();
 
 /* ---------- hero: crossfade background slideshow (photo links are managed by the admin) ---------- */
-function slider(urls,sec){
-  const box=$('#hbs'),dots=$('#dots'),pv=$('#pv'),nx=$('#nx');
+let heroFit=null;addEventListener('resize',()=>heroFit&&heroFit());
+function slider(urls,sec,fit){
+  const box=$('#hbs'),dots=$('#dots'),pv=$('#pv'),nx=$('#nx');heroFit=null;
   if(!urls.length){box.style.background='linear-gradient(135deg,#0b2e24,#1c5a43)';pv.hidden=nx.hidden=dots.hidden=true;return}
   urls=urls.slice(0,10);
   box.innerHTML=urls.map(u=>`<div class="hb" style="background-image:url('${u.replace(/'/g,'%27').replace(/"/g,'%22')}')"></div>`).join('');
   dots.innerHTML=urls.map((_,k)=>`<button aria-label="Show photo ${k+1}"></button>`).join('');
   const sl=[...box.children],dt=[...dots.children];let i=-1;
+  /* photo fit: "cover" fills the banner but crops; "contain" shows the whole photo. Auto picks contain when cover would cut off too much. */
+  const ar=[],apply=()=>{const q=box.clientWidth/(box.clientHeight||1);sl.forEach((s,k)=>{if(!ar[k])return;const crop=1-Math.min(ar[k]/q,q/ar[k]);s.style.backgroundSize=fit==='cover'?'cover':(fit==='contain'||crop>.3)?'contain':'cover'})};
+  heroFit=apply;urls.forEach((u,k)=>{const im=new Image();im.onload=()=>{ar[k]=im.naturalWidth/im.naturalHeight;apply()};im.src=u});
   const show=n=>{
     n=(n+sl.length)%sl.length;if(n===i)return;
     sl.forEach(s=>s.classList.remove('prev'));
@@ -141,13 +147,14 @@ function slider(urls,sec){
   pv.onclick=()=>{show(i-1);run()};nx.onclick=()=>{show(i+1);run()};dt.forEach((d,k)=>d.onclick=()=>{show(k);run()});
   if(sl.length<2)pv.hidden=nx.hidden=dots.hidden=true;
 }
-/* ---------- news ticker below the banner: it only scrolls when the text does not fit, and each item appears once ---------- */
+/* ---------- breaking-news ticker below the banner: always moving, like a news channel (text comes from the Announcements tab) ---------- */
 function ticker(list,S){
   const el=$('#tick');if(!el||S.marquee_on===false||!list.length)return;
   const it=list.map(a=>`<span class="mi"><b class="bdg ${a.pinned?'g':'n'}">${a.pinned?'HOT':'NEW'}</b>${esc(a.title)}</span>`).join('');
-  el.innerHTML=`<div class="w"><div class="mqt" id="mqt">${it}</div></div>`;el.hidden=false;
-  const t=$('#mqt'),room=t.parentElement.clientWidth-36;
-  if(t.offsetWidth>room){t.innerHTML=it+it;t.style.setProperty('--mqd',Math.max(15,(t.offsetWidth/2/60)|0)+'s');t.classList.add('run')}
+  el.innerHTML=`<div class="tw"><span class="tl">LATEST NEWS</span><div class="tv"><div class="mqt" id="mqt">${it}</div></div></div>`;el.hidden=false;
+  const t=$('#mqt'),room=t.parentElement.clientWidth,one=t.offsetWidth||1;
+  const rep=Math.max(1,Math.ceil(room/one)),half=it.repeat(rep); /* repeat only as much as needed to fill the bar, then loop seamlessly */
+  t.innerHTML=half+half;t.style.setProperty('--mqd',Math.max(12,(one*rep/70)|0)+'s');t.classList.add('run');
 }
 const waNum=s=>{let d=String(s||'').replace(/\D/g,'');if(d.startsWith('0'))d='92'+d.slice(1);return d};
 async function loadMeta(){
@@ -182,7 +189,7 @@ async function home(){
   <section class="w" id="contact"><h2>Contact us</h2>${cc.length?`<div class="grid">${cc.join('')}</div>`:'<p>Contact details will be added soon.</p>'}</section>
   <section class="w narrow" id="rate"><h2>Rate us and send a suggestion</h2><form class="card" id="rf"><label>Your name<input name="name" required maxlength="60"></label><b>Your rating</b><div class="st" id="st" role="radiogroup" aria-label="Rating">${[1,2,3,4,5].map(n=>`<button type="button" role="radio" aria-checked="false" data-n="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}</div><label>Suggestion or feedback<textarea name="message" rows="4" required maxlength="600"></textarea></label><input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="btn">Send</button></form></section>
   <section class="w"><h2>Frequently asked questions</h2>${faq.map(f=>`<details class="card"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>`;
-  slider(imgs,Math.min(15,Math.max(3,+S.hero_interval||5)));
+  slider(imgs,Math.min(15,Math.max(3,+S.hero_interval||5)),S.hero_fit||'auto');
   ticker(c.announcements,S);
   $('#hs').onsubmit=e=>{e.preventDefault();go('#/courses/'+encodeURIComponent($('#hq').value.trim()))};
   let rate=0;
@@ -213,7 +220,7 @@ async function courseV(id){
   <h2>About this course</h2><p>${esc(c.description)}</p>
   ${lines(c.benefits).length?`<h2>Why it matters</h2><ul class="tick">${lines(c.benefits).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
   ${lines(c.outcomes).length?`<h2>What you will learn</h2><ul class="tick">${lines(c.outcomes).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
-  <h2>Syllabus</h2>${c.modules.map(m=>`<details class="card"><summary>${esc(m.title)} (${m.lessons.length} lessons)</summary>${m.lessons.map(l=>`<div class="les">• ${esc(l.title)}</div>`).join('')}</details>`).join('')}</div>
+  <h2>Syllabus</h2>${c.modules.map(m=>`<details class="card"><summary>${esc(m.title)} (${m.lessons.length} ${m.lessons.length===1?'lesson':'lessons'})</summary>${m.lessons.map(l=>`<div class="les">• ${esc(l.title)}</div>`).join('')}</details>`).join('')}</div>
   <div class="card"><div class="price">${money(c.price)}</div><p>${n} lessons<br>Instructor: ${esc(c.instructor||'SkillBridge Team')}<br>Quiz, live classes and certificate with QR code</p>${cta}</div></div></div>`;
 }
 async function enroll(id){try{await api('enroll',{course_id:id});D=null;go('#/learn/'+id)}catch(e){err(e)}}
